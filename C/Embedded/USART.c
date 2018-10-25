@@ -36,7 +36,7 @@ void USART_Init(void) {
 void handleCommand() {
 	switch(incoming) {
 		case 0x81:
-			outgoing = 0xff;
+			outgoing = ADCH;
 			SCH_Add_Task(USART_Transmit, 0, 0);
 			break;
 			

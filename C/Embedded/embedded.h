@@ -14,8 +14,9 @@ void USART_Receive(void);
 void Toggle_LED(void);
 void waitForReceive();
 
+void ADC_init(void);
+
 
 #define UBRRVAL 51
 #define MIN_DIS 6
 #define MAX_DIS 160
-
