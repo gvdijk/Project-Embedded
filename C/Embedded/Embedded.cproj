@@ -126,6 +126,9 @@
     <Compile Include="AVR_TTC_scheduler.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="embedded.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
