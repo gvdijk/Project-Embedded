@@ -36,7 +36,7 @@ void USART_Init(void) {
 void handleCommand() {
 	switch(incoming) {
 		case 0x81:
-			outgoing = ADCH;
+			outgoing = get_ADCValue();
 			SCH_Add_Task(USART_Transmit, 0, 0);
 			break;
 			
@@ -90,10 +90,6 @@ void USART_Receive(void) {
 	}
 }
 
-// Zet de LED uit als de waarde 0 is, anders zet de LED aan
-void Toggle_LED(void) {
-	PORTB ^= 0xff;
-}
 
 void waitForReceive() {
 	USART_Receive();
