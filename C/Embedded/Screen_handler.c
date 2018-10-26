@@ -34,9 +34,11 @@ void handle_sensors(){
 */
 void set_led(){
 	if (screen_state){
-		PORTD = (1 << PORTD7);
+		PORTD |= (1 << PORTD7);		// Zet poort D7 naar 1
+		PORTD &= ~(1 << PORTD6);	// Zet poort D6 naar 0
 	}else{
-		PORTD = (1 << PORTD6);
+		PORTD |= (1 << PORTD6);		// Zet poort D6 naar 0
+		PORTD &= ~(1 << PORTD7);	// Zet poort D7 naar 1
 	}
 }
 
