@@ -6,16 +6,3 @@
 #define F_CPU 16E6
 #include <util/delay.h>
 
-
-
-void USART_Init(void);
-void USART_Transmit(void);
-void USART_Receive(void);
-void Toggle_LED(void);
-void waitForReceive();
-
-
-#define UBRRVAL 51
-#define MIN_DIS 6
-#define MAX_DIS 160
-

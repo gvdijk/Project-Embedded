@@ -1,8 +1,13 @@
 #include "embedded.h"
+#include "USART.h"
+#include "HC_SR04.h"
 
 uint8_t incoming;
-uint8_t outgoing;
+uint16_t outgoing;
 
+/*
+ * Initialiseer de USART communicatie
+ */
 void USART_Init(void) {
 	// Zet de baud rate
 	UBRR0H = (UBRRVAL >> 8);
@@ -18,7 +23,6 @@ void USART_Init(void) {
 	UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
 }
 
-
 /*
  * Lees instructies
  * 0x81		Lees licht sensor
@@ -31,33 +35,27 @@ void USART_Init(void) {
  * 0x8b		Rol zonnescherm uit
  * 0x8c		Rol zonnescherm in
  * 0x8d		Stop in- of uitrollen
- * 
  */ 
 void handleCommand() {
 	switch(incoming) {
 		case 0x81:
-			outgoing = 0xff;
-			SCH_Add_Task(USART_Transmit, 0, 0);
+			outgoing = 0xee;
 			break;
 			
 		case 0x82:
-			outgoing = 0x33;
-			SCH_Add_Task(USART_Transmit, 0, 0);
+			outgoing = 16;
 			break;
 			
 		case 0x83:
-			outgoing = 0x54;
-			SCH_Add_Task(USART_Transmit, 0, 0);
+			outgoing = Ultrasoon_Trigger();
 			break;
 			
 		case 0x84:
-			outgoing = MIN_DIS;
-			SCH_Add_Task(USART_Transmit, 0, 0);
+			outgoing = getMinimumDistance();
 			break;
 			
 		case 0x85:
-			outgoing = MAX_DIS;
-			SCH_Add_Task(USART_Transmit, 0, 0);
+			outgoing = getMaximumDistance();
 			break;
 				
 		case 0x8b:
@@ -71,18 +69,32 @@ void handleCommand() {
 			
 		default:
 			outgoing = 0xff;
-			SCH_Add_Task(USART_Transmit, 0, 0);
 			break;
 	}
+	
+	SCH_Add_Task(USART_Transmit_High, 0, 0);
+	SCH_Add_Task(USART_Transmit_Low, 1, 0);
 }
 
-// Wacht op een lege transmit buffer, stuur dan data
-void USART_Transmit(void) {
+/*
+ * Wacht op een lege transmit buffer, stuur dan de high byte
+ */
+void USART_Transmit_High(void) {
 	while ( !(UCSR0A &  (1 << UDRE0)));
-	UDR0 = outgoing;
+	UDR0 = (outgoing >> 8);
 }
 
-// Wacht op het ontvangen van data, zet het resultaat voeg taken toe aan de scheduler
+/*
+ * Wacht op een lege transmit buffer, stuur dan de low byte
+ */
+void USART_Transmit_Low(void) {
+	while ( !(UCSR0A &  (1 << UDRE0)));
+	UDR0 = (outgoing & 0xff);
+}
+
+/*
+ * Wacht op het ontvangen van data, zet het resultaat, en voeg de taak toe aan de scheduler
+ */
 void USART_Receive(void) {
 	if (UCSR0A & (1 << RXC0)) {
 		incoming = UDR0;
@@ -90,12 +102,4 @@ void USART_Receive(void) {
 	}
 }
 
-// Zet de LED uit als de waarde 0 is, anders zet de LED aan
-void Toggle_LED(void) {
-	PORTB ^= 0xff;
-}
-
-void waitForReceive() {
-	USART_Receive();
-}
 

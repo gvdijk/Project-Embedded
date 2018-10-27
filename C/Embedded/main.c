@@ -1,17 +1,19 @@
 
 
 #include "embedded.h"
+#include "USART.h"
+#include "HC_SR04.h"
 
 char result;
 
 
 void setup() {
-	DDRB = 0x01;	// Poort B als output poort instellen
-	PORTB = 0x00;	// Schrijf 0 naar poort B
-	USART_Init();	// Initialiseer 
+	Ultrasoon_Init();
+	
+	USART_Init();
 	
 	SCH_Init_T1();
-	SCH_Add_Task(waitForReceive, 100, 2);
+	SCH_Add_Task(USART_Receive, 100, 2);
 	SCH_Start();
 }
 
