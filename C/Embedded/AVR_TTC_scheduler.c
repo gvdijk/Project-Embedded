@@ -158,7 +158,7 @@ void SCH_Init_T1(void)
    }
 
    // Set up Timer 1
-   OCR1A = (uint16_t)25;   		     // 1ms = (250/16.000.000) * 250
+   OCR1A = (uint16_t)500;   		     // 2ms = (250/16.000.000) * 500
    TCCR1B = (1 << CS11) | (1 << CS10) | (1 << WGM12);  // prescale op 64, top counter = value OCR1A (CTC mode)
    TIMSK1 = 1 << OCIE1A;   		     // Timer 1 Output Compare A Match Interrupt Enable
 }
