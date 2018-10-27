@@ -9,7 +9,7 @@
 #include "HC_SR04.h"
 
 bool screen_state = false;
-uint8_t temperature_trigger = 148;
+uint16_t brightness_trigger = 700;
 
 // Initialiseer de poorten om de lampjes aan te sturen
 void LED_init(){
@@ -19,11 +19,11 @@ void LED_init(){
 
 // Check of er aan de hand van de sensordata iets met het scherm gedaan moet worden
 void handle_sensors(){
-	uint8_t temperaturevalue = get_ADCValue();
-	if(temperaturevalue < temperature_trigger && screen_state){
+	uint16_t brightnessvalue = get_ADCValue();
+	if(brightnessvalue < brightness_trigger && screen_state){
 		screen_roll_in();
 	}
-	else if(temperaturevalue > temperature_trigger && !screen_state){
+	else if(brightnessvalue > brightness_trigger && !screen_state){
 		screen_roll_out();
 	}
 }
@@ -50,7 +50,7 @@ void screen_roll_in(){
 	blink_led();
 }
 
-// Rol het scherm uit als het intgeklapt is
+// Rol het scherm uit als het ingeklapt is
 void screen_roll_out(){
 	screen_state = true;
 	set_led();
