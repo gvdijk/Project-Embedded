@@ -8,7 +8,7 @@
 #include "embedded.h"
 
 bool screen_state = false;
-uint8_t brightness_trigger = 180;
+uint8_t temperature_trigger = 148;
 
 // Initialiseer de poorten om de lampjes aan te sturen
 void LED_init(){
@@ -18,11 +18,11 @@ void LED_init(){
 
 // Check of er aan de hand van de sensordata iets met het scherm gedaan moet worden
 void handle_sensors(){
-	uint8_t lightvalue = get_ADCValue();
-	if(lightvalue < brightness_trigger && screen_state){
+	uint8_t temperaturevalue = get_ADCValue();
+	if(temperaturevalue < temperature_trigger && screen_state){
 		screen_roll_in();
 	}
-	else if(lightvalue > brightness_trigger && !screen_state){
+	else if(temperaturevalue > temperature_trigger && !screen_state){
 		screen_roll_out();
 	}
 }
@@ -53,17 +53,21 @@ void screen_roll_in(){
 void screen_roll_out(){
 	screen_state = true;
 	set_led();
-	blink_led();
+	blink_led()
 }
 
 // Knipper een geel lampje voor 5 seconde
 void blink_led(){
-	uint8_t temp = 0;
+	int temp = 0;
 	while(temp < 10){
-		PORTD ^= (1 << PORTD5);
-		_delay_ms(500);
-		temp ++;
+		SCH_Add_Task(reverse_led, 0, 0);
+		temp++;
 	}
+}
+
+// Zet het gele lampje aan als het uit is of uit als het aan is
+void reverse_led(){
+	PORTD ^= (1 << PORTD5);
 }
 
 /*	Return de status van het zonnescherm

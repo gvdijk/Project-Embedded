@@ -101,12 +101,3 @@ void USART_Receive(void) {
 		SCH_Add_Task(handleCommand, 0, 0);
 	}
 }
-
-<<<<<<< HEAD
-
-void waitForReceive() {
-	USART_Receive();
-}
-=======
->>>>>>> master
-

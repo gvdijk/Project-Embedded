@@ -20,4 +20,4 @@ void set_screenstate(bool state);
 
 // Function prototypes voor de ADC_handler
 void ADC_init(void);
-uint8_t get_ADCValue();
+uint16_t get_ADCValue();

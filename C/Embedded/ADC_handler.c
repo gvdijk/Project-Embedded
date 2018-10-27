@@ -15,13 +15,12 @@ void ADC_init(void){
 	
 	ADMUX |= (1 << REFS0);											// ADC referentie voltage zetten op het interne voltage van het bordje (5v)
 	ADMUX |= (0 << MUX0) | (0 << MUX1) | (0 << MUX2) | (0 << MUX3);	// ADC poort A0 instellen als inputpoort
-	ADMUX |= (1 << ADLAR);											// ADC output waarde instellen op 8 bits ipv de standaard 10 bits
 	
 	ADCSRA |= (1 << ADEN);	// ADC unit aanzetten
 	ADCSRA |= (1 << ADSC);	// ADC conversie starten
 }
 
 // Return de waarde van de lichtgevoelige sensor
-uint8_t get_ADCValue(){
-	return ADCH;
+uint16_t get_ADCValue(){
+	return (ADCH << 8) + ADCL;
 }
