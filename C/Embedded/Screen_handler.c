@@ -6,6 +6,7 @@
  */ 
 
 #include "embedded.h"
+#include "HC_SR04.h"
 
 bool screen_state = false;
 uint8_t temperature_trigger = 148;
@@ -53,14 +54,16 @@ void screen_roll_in(){
 void screen_roll_out(){
 	screen_state = true;
 	set_led();
-	blink_led()
+	blink_led();
 }
 
-// Knipper een geel lampje voor 5 seconde
+// Knipper een geel lampje zolang het scherm bezig is met in- of uitrollen
 void blink_led(){
 	int temp = 0;
+	int i = 0;
 	while(temp < 10){
-		SCH_Add_Task(reverse_led, 0, 0);
+		SCH_Add_Task(reverse_led, i, 0);
+		i += 250;
 		temp++;
 	}
 }

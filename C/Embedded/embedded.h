@@ -15,6 +15,7 @@ void set_led();
 void screen_roll_in();
 void screen_roll_out();
 void blink_led();
+void reverse_led();
 bool get_screenstate();
 void set_screenstate(bool state);
 
