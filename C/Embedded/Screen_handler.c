@@ -6,26 +6,16 @@
  */ 
 
 #include "embedded.h"
+#include "Screen_handler.h"
 #include "HC_SR04.h"
 
-bool screen_state = false;
+bool screen_stop = false;
 uint16_t temperature_trigger = 50;
 
 // Initialiseer de poorten om de lampjes aan te sturen
-void LED_init(){
+void LED_init(void) {
 	DDRD |= (1 << PORTD5) |(1 << PORTD6) |(1 << PORTD7);	//Zet poorten 6, 7 en 8 van PORTD als output poort
-	set_led();	// Zet het juiste lampje aan om de status van het zonnescherm te weergeven
-}
-
-// Check of er aan de hand van de sensordata iets met het scherm gedaan moet worden
-void handle_sensors(){
-	uint16_t temperaturevalue = get_ADCValue();
-	if(temperaturevalue < temperature_trigger && screen_state){
-		screen_roll_in();
-	}
-	else if(temperaturevalue > temperature_trigger && !screen_state){
-		screen_roll_out();
-	}
+	set_led(false);	// Zet het juiste lampje aan om de status van het zonnescherm te weergeven
 }
 
 /*	Zet de led aan die representeert in welke stand het scherm momenteel staat
@@ -33,60 +23,63 @@ void handle_sensors(){
 *	Groen = Ingeklapt
 *	Rood = Uitgeklapt
 */
-void set_led(){
-	if (screen_state){
+void set_led(bool status) {
+	if (status) {
 		PORTD |= (1 << PORTD7);		// Zet poort D7 naar 1
 		PORTD &= ~(1 << PORTD6);	// Zet poort D6 naar 0
-	}else{
+	} else {
 		PORTD |= (1 << PORTD6);		// Zet poort D6 naar 0
 		PORTD &= ~(1 << PORTD7);	// Zet poort D7 naar 1
 	}
 }
 
 // Rol het scherm in als het uitgeklapt is
-void screen_roll_in(){
-	screen_state = false;
-	set_led();
-	blink_led();
+void screen_roll_in(void) {
+	if (!screen_stop) {
+		if (Ultrasoon_Trigger() > getMinimumDistance()) {
+			status_led_toggle();
+			SCH_Add_Task(screen_roll_in, 250, 0);
+		} else {
+			status_led_off();
+			set_led(false);
+		}
+	} else {
+		screen_stop = false;
+		status_led_off();
+	}
 }
 
-// Rol het scherm uit als het intgeklapt is
-void screen_roll_out(){
-	screen_state = true;
-	set_led();
-	blink_led();
-}
-
-// Knipper een geel lampje zolang het scherm bezig is met in- of uitrollen
-void blink_led(){
-	int temp = 0;
-	int i = 0;
-	while(temp < 10){
-		SCH_Add_Task(reverse_led, i, 0);
-		i += 250;
-		temp++;
+// Rol het scherm uit als het ingeklapt is
+void screen_roll_out(void) {
+	set_led(true);
+	if (!screen_stop) {
+		if (Ultrasoon_Trigger() < getMaximumDistance()) {
+			status_led_toggle();
+			SCH_Add_Task(screen_roll_out, 250, 0);
+		} else {
+			status_led_off();
+		}
+	} else {
+		screen_stop = false;
+		status_led_off();
 	}
 }
 
 // Zet het gele lampje aan als het uit is of uit als het aan is
-void reverse_led(){
+void status_led_toggle(void) {
 	PORTD ^= (1 << PORTD5);
 }
 
-/*	Return de status van het zonnescherm
-*
-*	false = ingeklapt	
-*	true = uitgeklapt
-*/
-bool get_screenstate(){
-	return screen_state;
+// Zet het gele lampje aan als het uit is of uit als het aan is
+void status_led_off(void) {
+	PORTD &= ~(1 << PORTD5);
 }
 
-/*	Zet de status van het zonnescherm
+/*	Zet de status van de stop controlle
 *
 *	false = ingeklapt
 *	true = uitgeklapt
 */
-void set_screenstate(bool state){
-	screen_state = state;
+void set_stopstate(bool state) {
+	screen_stop = state;
 }

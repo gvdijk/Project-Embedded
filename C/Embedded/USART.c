@@ -1,6 +1,7 @@
 #include "embedded.h"
 #include "USART.h"
 #include "HC_SR04.h"
+#include "Screen_handler.h"
 
 uint8_t incoming = 0;
 uint8_t instruction = 0;
@@ -31,11 +32,13 @@ void USART_Init(void) {
 void handleInstruction(void) {
 	switch(instruction) {
 		case 0xe1:
-			// TODO: Pas de minimale afstand aan
+			// Pas de minimale afstand aan
+			setMinimumDistance(value & 0xff);
 			break;
 		
 		case 0xe2:
-			// TODO: Pas de maximale afstand aan
+			// Pas de maximale afstand aan
+			setMaximumDistance(value & 0xff);
 			break;
 		
 		case 0xf1:
@@ -46,8 +49,10 @@ void handleInstruction(void) {
 			// TODO: Pas de temperatuur threshold aan
 			break;
 	}
+	// Clear de instructie en waarde
 	instruction = 0;
 	value = 0;
+	// Return 1111 1111 als bevestiging vvan uitvoering
 	outgoing = 0xff;
 	SCH_Add_Task(USART_Transmit_Low, 0, 0);
 }
@@ -83,55 +88,63 @@ void handleCommand(void) {
 			if ((instruction >> 4) == 0xe) {
 				handleInstruction();
 			} else if ((instruction >> 4) == 0xf) {
+				// Return 1111 0000 als aanvraag voor meer input
 				outgoing = 0xf0;
 				SCH_Add_Task(USART_Transmit_Low, 0, 0);
 			}
 		}
 	} else {
-		if ((incoming >> 4) == 0xe || (incoming >> 4) == 0xf) {
+		if (incoming == 0xe1 || incoming == 0xe2 || incoming == 0xf1 || incoming == 0xf2) {
 			instruction = incoming;
 			outgoing = 0xf0;
 			SCH_Add_Task(USART_Transmit_Low, 0, 0);
 		} else {
 			switch(incoming) {
 				case 0x81:
-				outgoing = 0;
-				break;
+					outgoing = 0;
+					break;
 				
 				case 0x82:
-				outgoing = 0;
-				break;
+					outgoing = 0;
+					break;
 			
 				case 0x91:
-				outgoing = Ultrasoon_Trigger();
-				break;
+					outgoing = Ultrasoon_Trigger();
+					break;
 			
 				case 0x92:
-				outgoing = getMinimumDistance();
-				break;
+					outgoing = getMinimumDistance();
+					break;
 			
 				case 0x93:
-				outgoing = getMaximumDistance();
-				break;
+					outgoing = getMaximumDistance();
+					break;
 			
 				case 0xc1:
-				break;
+					outgoing = 0xff;
+					screen_roll_out();
+					break;
 			
 				case 0xc2:
-				break;
+					outgoing = 0xff;
+					screen_roll_in();
+					break;
 			
 				case 0xc3:
-				break;
+					outgoing = 0xff;
+					set_stopstate(true);
+					break;
 				
 				case 0xc4:
-				break;
+					break;
 				
 				case 0xc5:
-				break;
+					break;
 			
 				default:
-				outgoing = 0xff;
-				break;
+					// Return 0001 0001 als foutmelding
+					outgoing = 0x11;
+					break;
 			}
 			if ((incoming >> 4) == 0x81 || (incoming >> 4) == 0x82) {
 				SCH_Add_Task(USART_Transmit_High, 0, 0);
