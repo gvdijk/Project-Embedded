@@ -4,16 +4,15 @@
 #include "USART.h"
 #include "HC_SR04.h"
 
-char result;
-
-
 void setup() {
-	Ultrasoon_Init();
-	
-	USART_Init();
+	Ultrasoon_Init();	// Initialiseer de ultrasoon sensor
+	USART_Init();		// Initialiseer USART verbinding
+	ADC_init();			// Initialiseer Analog to Digital conversie unit
+	LED_init();			// Initialiseer de LEDS die het zonnescherm representeren
 	
 	SCH_Init_T1();
 	SCH_Add_Task(USART_Receive, 100, 2);
+	SCH_Add_Task(handle_sensors, 100, 2);
 	SCH_Start();
 }
 

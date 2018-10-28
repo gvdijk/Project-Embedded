@@ -97,7 +97,7 @@ void handleCommand(void) {
 				case 0x81:
 				outgoing = 0;
 				break;
-			
+				
 				case 0x82:
 				outgoing = 0;
 				break;
@@ -168,5 +168,3 @@ void USART_Receive(void) {
 		SCH_Add_Task(handleCommand, 0, 0);
 	}
 }
-
-

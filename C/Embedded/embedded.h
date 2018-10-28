@@ -6,3 +6,19 @@
 #define F_CPU 16E6
 #include <util/delay.h>
 
+typedef enum { false, true } bool;
+
+// Function prototypes voor de Screen_handler
+void LED_init();
+void handle_sensors();
+void set_led();
+void screen_roll_in();
+void screen_roll_out();
+void blink_led();
+void reverse_led();
+bool get_screenstate();
+void set_screenstate(bool state);
+
+// Function prototypes voor de ADC_handler
+void ADC_init(void);
+uint16_t get_ADCValue();

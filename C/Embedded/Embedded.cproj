@@ -133,6 +133,9 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ADC_handler.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="AVR_TTC_scheduler.c">
       <SubType>compile</SubType>
     </Compile>
@@ -149,6 +152,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Screen_handler.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="USART.c">
