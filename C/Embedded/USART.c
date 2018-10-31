@@ -92,17 +92,22 @@ void handleCommand(void) {
 			}
 		}
 	} else {
-		if (incoming == 0xe1 || incoming == 0xe2 || incoming == 0xf1 || incoming == 0xf2) {
+		if (incoming == 0xe1 || incoming == 0xe2 || incoming == 0xf1) {
 			instruction = incoming;
 			outgoing = 0xf0;
 			SCH_Add_Task(USART_Transmit_Low, 0, 0);
 		} else {
 			switch(incoming) {
 				case 0x81:
-					outgoing = get_ADCValue();
+					// 0x61 voor Licht, 0x62 voor Temp
+					outgoing = 0x62;
 					break;
 				
 				case 0x82:
+					outgoing = get_ADCValue();
+					break;
+				
+				case 0x83:
 					outgoing = get_sensor_threshold();
 					break;
 			
@@ -142,7 +147,7 @@ void handleCommand(void) {
 					outgoing = 0x11;
 					break;
 			}
-			if ((incoming) == 0x81 || (incoming) == 0x82) {
+			if ((incoming) == 0x82 || (incoming) == 0x83) {
 				SCH_Add_Task(USART_Transmit_High, 0, 0);
 				SCH_Add_Task(USART_Transmit_Low, 1, 0);
 			} else {
