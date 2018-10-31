@@ -136,6 +136,9 @@
     <Compile Include="ADC_handler.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="ADC_handler.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="AVR_TTC_scheduler.c">
       <SubType>compile</SubType>
     </Compile>

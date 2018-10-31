@@ -1,5 +1,6 @@
 
 void LED_init(void);
+void handle_sensors(void);
 void set_led(bool status);
 void screen_roll_in(void);
 void screen_roll_out(void);

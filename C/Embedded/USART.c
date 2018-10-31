@@ -2,6 +2,7 @@
 #include "USART.h"
 #include "HC_SR04.h"
 #include "Screen_handler.h"
+#include "ADC_handler.h"
 
 uint8_t incoming = 0;
 uint8_t instruction = 0;
@@ -42,12 +43,12 @@ void handleInstruction(void) {
 			break;
 		
 		case 0xf1:
-			set_light(value);
-			break;
-		
-		case 0xf2:
 			set_temperature(value);
 			break;
+		
+//		case 0xf2:
+//			set_temperature(value);
+//			break;
 	}
 	// Clear de instructie en waarde
 	instruction = 0;
@@ -101,11 +102,11 @@ void handleCommand(void) {
 		} else {
 			switch(incoming) {
 				case 0x81:
-					outgoing = get_light();
+					outgoing = get_ADCValue();
 					break;
 				
 				case 0x82:
-				outgoing = get_temperature();
+					outgoing = get_temperature();
 					break;
 			
 				case 0x91:
@@ -136,12 +137,12 @@ void handleCommand(void) {
 					break;
 				
 				case 0xc4:
-					outgoing = (toggle_auto_light() == true) ? 0xff : 0x0f;
+					outgoing = (toggle_auto_temp() == true) ? 0xff : 0x0f;
 					break;
 				
-				case 0xc5:
-					outgoing = (toggle_auto_light() == true) ? 0xff : 0x0f;
-					break;
+//				case 0xc5:
+//					outgoing = (toggle_auto_light() == true) ? 0xff : 0x0f;
+//					break;
 			
 				default:
 					// Return 0001 0001 als foutmelding

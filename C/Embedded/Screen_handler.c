@@ -8,17 +8,31 @@
 #include "embedded.h"
 #include "Screen_handler.h"
 #include "HC_SR04.h"
+#include "ADC_handler.h"
 
 bool screen_stop = false;
 bool auto_temp = false;
 bool auto_light = false;
 uint16_t temperature_trigger = 50;
-uint16_t light_trigger = 500;
+uint16_t light_trigger = 0;
 
 // Initialiseer de poorten om de lampjes aan te sturen
 void LED_init(void) {
 	DDRD |= (1 << PORTD5) |(1 << PORTD6) |(1 << PORTD7);	//Zet poorten 6, 7 en 8 van PORTD als output poort
 	set_led(false);	// Zet het juiste lampje aan om de status van het zonnescherm te weergeven
+}
+
+// Check of er aan de hand van de sensordata iets met het scherm gedaan moet worden
+void handle_sensors(void) {
+	if (auto_temp) {
+		uint16_t temperaturevalue = get_ADCValue();
+		if(temperaturevalue < temperature_trigger + 1){
+			screen_roll_in();
+		}
+		else if(temperaturevalue > temperature_trigger - 1){
+			screen_roll_out();
+		}
+	}
 }
 
 /*	Zet de led aan die representeert in welke stand het scherm momenteel staat
