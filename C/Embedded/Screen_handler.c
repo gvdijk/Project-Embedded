@@ -2,7 +2,7 @@
  * Screen_handler.c
  *
  * Created: 26-10-2018 15:41:33
- *  Author: justin
+ * Author: Justin, Gerard
  */ 
 
 #include "embedded.h"
@@ -10,11 +10,13 @@
 #include "HC_SR04.h"
 #include "ADC_handler.h"
 
+typedef enum { retracted, rolling, extended, floating } state;
+
 bool screen_stop = false;
-bool auto_temp = false;
-bool auto_light = false;
-uint16_t temperature_trigger = 50;
-uint16_t light_trigger = 0;
+bool auto_sensor = false;
+state screen_state = false;
+uint16_t sensor_trigger = 50;
+uint16_t sensor_margin = 1;
 
 // Initialiseer de poorten om de lampjes aan te sturen
 void LED_init(void) {
@@ -24,13 +26,17 @@ void LED_init(void) {
 
 // Check of er aan de hand van de sensordata iets met het scherm gedaan moet worden
 void handle_sensors(void) {
-	if (auto_temp) {
+	if (auto_sensor) {
 		uint16_t temperaturevalue = get_ADCValue();
-		if(temperaturevalue < temperature_trigger + 1){
-			screen_roll_in();
+		if(temperaturevalue < (sensor_trigger + sensor_margin)){
+			if (screen_state == extended || screen_state == floating) {
+				screen_roll_in();
+			}
 		}
-		else if(temperaturevalue > temperature_trigger - 1){
-			screen_roll_out();
+		else if(temperaturevalue > (sensor_trigger - sensor_margin)){
+			if (screen_state == retracted || screen_state == floating) {
+				screen_roll_out();
+			}
 		}
 	}
 }
@@ -52,22 +58,26 @@ void set_led(bool status) {
 
 // Rol het scherm in als het uitgeklapt is
 void screen_roll_in(void) {
+	screen_state = rolling;
 	if (!screen_stop) {
 		if (Ultrasoon_Trigger() > getMinimumDistance()) {
 			status_led_toggle();
 			SCH_Add_Task(screen_roll_in, 250, 0);
 		} else {
 			status_led_off();
+			screen_state = retracted;
 			set_led(false);
 		}
 	} else {
 		screen_stop = false;
+		screen_state = floating;
 		status_led_off();
 	}
 }
 
 // Rol het scherm uit als het ingeklapt is
 void screen_roll_out(void) {
+	screen_state = rolling;
 	set_led(true);
 	if (!screen_stop) {
 		if (Ultrasoon_Trigger() < getMaximumDistance()) {
@@ -75,9 +85,11 @@ void screen_roll_out(void) {
 			SCH_Add_Task(screen_roll_out, 250, 0);
 		} else {
 			status_led_off();
+			screen_state = extended;
 		}
 	} else {
 		screen_stop = false;
+		screen_state = floating;
 		status_led_off();
 	}
 }
@@ -94,53 +106,31 @@ void status_led_off(void) {
 
 /*	Zet de status van de stop controlle
 *
-*	false = ingeklapt
-*	true = uitgeklapt
+*	false = ga door naar behoren
+*	true = annuleer het bewegen van het scherm
 */
 void set_stopstate(bool state) {
 	screen_stop = state;
 }
 
-/*	Switch het automatische inklappen op basis van temperatuur
+/*	Switch het automatische inklappen op basis van de sensor
 *
 *	Returned de nieuwe status
 */
-bool toggle_auto_temp(void) {
-	auto_temp = (auto_temp == true) ? false : true;
-	return auto_temp;
-}
-
-/*	Switch het automatische inklappen op basis van licht
-*	
-*	Returned de nieuwe status
-*/
-bool toggle_auto_light(void) {
-	auto_light = (auto_light == true) ? false : true;
-	return auto_light;
+bool toggle_auto_sensor(void) {
+	auto_sensor = (auto_sensor == true) ? false : true;
+	return auto_sensor;
 }
 
 
-/*	Zet de temperatuur trigger
+/*	Zet de sensor threshold van de aangesloten sensor
 */
-void set_temperature(uint16_t val) {
-	temperature_trigger = val;
+void set_sensor_threshold(uint16_t val) {
+	sensor_trigger = val;
 }
 
-/*	Zet de temperatuur trigger
+/*	Verkrijg de sensor threshold van de aangesloten sensor
 */
-uint16_t get_temperature(void) {
-	return temperature_trigger;
-}
-
-
-/*	Zet de temperatuur trigger
-*/
-void set_light(uint16_t val) {
-	light_trigger = val;
-}
-
-/*	Zet de temperatuur trigger
-*/
-uint16_t get_light(void) {
-	return light_trigger;
+uint16_t get_sensor_threshold(void) {
+	return sensor_trigger;
 }

@@ -1,3 +1,9 @@
+/*
+ * HC_SR04.c
+ *
+ * Author: Gerard
+ */ 
+
 #include "embedded.h"
 #include "HC_SR04.h"
 

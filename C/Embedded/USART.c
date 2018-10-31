@@ -43,12 +43,9 @@ void handleInstruction(void) {
 			break;
 		
 		case 0xf1:
-			set_temperature(value);
+			// Pas de threshold van de sensor aan
+			set_sensor_threshold(value);
 			break;
-		
-//		case 0xf2:
-//			set_temperature(value);
-//			break;
 	}
 	// Clear de instructie en waarde
 	instruction = 0;
@@ -106,7 +103,7 @@ void handleCommand(void) {
 					break;
 				
 				case 0x82:
-					outgoing = get_temperature();
+					outgoing = get_sensor_threshold();
 					break;
 			
 				case 0x91:
@@ -137,12 +134,8 @@ void handleCommand(void) {
 					break;
 				
 				case 0xc4:
-					outgoing = (toggle_auto_temp() == true) ? 0xff : 0x0f;
+					outgoing = (toggle_auto_sensor() == true) ? 0xff : 0x0f;
 					break;
-				
-//				case 0xc5:
-//					outgoing = (toggle_auto_light() == true) ? 0xff : 0x0f;
-//					break;
 			
 				default:
 					// Return 0001 0001 als foutmelding

@@ -14,6 +14,7 @@ void setup() {
 	
 	SCH_Init_T1();
 	SCH_Add_Task(USART_Receive, 100, 2);
+	SCH_Add_Task(handle_sensors, 1000, 1000);
 	SCH_Start();
 }
 
