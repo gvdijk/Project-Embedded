@@ -10,7 +10,10 @@
 #include "HC_SR04.h"
 
 bool screen_stop = false;
+bool auto_temp = false;
+bool auto_light = false;
 uint16_t temperature_trigger = 50;
+uint16_t light_trigger = 500;
 
 // Initialiseer de poorten om de lampjes aan te sturen
 void LED_init(void) {
@@ -82,4 +85,48 @@ void status_led_off(void) {
 */
 void set_stopstate(bool state) {
 	screen_stop = state;
+}
+
+/*	Switch het automatische inklappen op basis van temperatuur
+*
+*	Returned de nieuwe status
+*/
+bool toggle_auto_temp(void) {
+	auto_temp = (auto_temp == true) ? false : true;
+	return auto_temp;
+}
+
+/*	Switch het automatische inklappen op basis van licht
+*	
+*	Returned de nieuwe status
+*/
+bool toggle_auto_light(void) {
+	auto_light = (auto_light == true) ? false : true;
+	return auto_light;
+}
+
+
+/*	Zet de temperatuur trigger
+*/
+void set_temperature(uint16_t val) {
+	temperature_trigger = val;
+}
+
+/*	Zet de temperatuur trigger
+*/
+uint16_t get_temperature(void) {
+	return temperature_trigger;
+}
+
+
+/*	Zet de temperatuur trigger
+*/
+void set_light(uint16_t val) {
+	light_trigger = val;
+}
+
+/*	Zet de temperatuur trigger
+*/
+uint16_t get_light(void) {
+	return light_trigger;
 }

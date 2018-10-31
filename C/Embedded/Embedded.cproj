@@ -157,6 +157,9 @@
     <Compile Include="Screen_handler.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Screen_handler.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="USART.c">
       <SubType>compile</SubType>
     </Compile>

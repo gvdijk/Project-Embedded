@@ -42,11 +42,11 @@ void handleInstruction(void) {
 			break;
 		
 		case 0xf1:
-			// TODO: Pas de lichtintensiteit threshold aan
+			set_light(value);
 			break;
 		
 		case 0xf2:
-			// TODO: Pas de temperatuur threshold aan
+			set_temperature(value);
 			break;
 	}
 	// Clear de instructie en waarde
@@ -70,7 +70,7 @@ void handleInstruction(void) {
  * 0xc2		Rol zonnescherm in
  * 0xc3		Stop in- of uitrollen
  * 0xc4		Toggle automatische bediening licht
- * 0xc5		Toggle automatische bediening temeratuur
+ * 0xc5		Toggle automatische bediening temperatuur
  *
  * Schrijf instructies
  * 0xe1		Pas de minimale afstand aan
@@ -101,11 +101,11 @@ void handleCommand(void) {
 		} else {
 			switch(incoming) {
 				case 0x81:
-					outgoing = 0;
+					outgoing = get_light();
 					break;
 				
 				case 0x82:
-					outgoing = 0;
+				outgoing = get_temperature();
 					break;
 			
 				case 0x91:
@@ -136,9 +136,11 @@ void handleCommand(void) {
 					break;
 				
 				case 0xc4:
+					outgoing = (toggle_auto_light() == true) ? 0xff : 0x0f;
 					break;
 				
 				case 0xc5:
+					outgoing = (toggle_auto_light() == true) ? 0xff : 0x0f;
 					break;
 			
 				default:
@@ -146,7 +148,7 @@ void handleCommand(void) {
 					outgoing = 0x11;
 					break;
 			}
-			if ((incoming >> 4) == 0x81 || (incoming >> 4) == 0x82) {
+			if ((incoming) == 0x81 || (incoming) == 0x82) {
 				SCH_Add_Task(USART_Transmit_High, 0, 0);
 				SCH_Add_Task(USART_Transmit_Low, 1, 0);
 			} else {
