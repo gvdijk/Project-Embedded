@@ -1,11 +1,13 @@
 import tkinter as tk
 
+from Python.core.controlunit.controlunit import ControlUnit
 from Python.core.engine.engine import Engine
 from Python.ui.menu.MenuStack import MenuStack
 from Python.ui.menu.main.mainmenu import MainMenu
+from Python.ui.menu.menu import Menu
 
 
-class Application(tk.Frame):
+class Application(Menu):
 
     def __init__(self, tk_root):
         print('Initializing class Application')
@@ -17,6 +19,10 @@ class Application(tk.Frame):
         self.menu_stack.next(MainMenu(self))
         self.menu_stack.back()
 
+        self.fake_data()
+
+    def fake_data(self):
+        self.engine.add_control_unit(ControlUnit(ControlUnit.Type.TEMPERATURE))
 
 if __name__ == "__main__":
     root = tk.Tk()

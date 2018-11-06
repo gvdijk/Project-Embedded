@@ -5,13 +5,13 @@ import tkinter as tk
 class MenuStack:
     class __MenuStack:
 
-        def __init__(self, root_menu: tk.Frame):
+        def __init__(self, root_menu: Menu):
             self.stack = [root_menu]
             pass
 
     instance: __MenuStack = None
 
-    def __init__(self, root_menu: tk.Frame):
+    def __init__(self, root_menu: Menu):
         if not MenuStack.instance:
             MenuStack.instance = MenuStack.__MenuStack(root_menu)
 
