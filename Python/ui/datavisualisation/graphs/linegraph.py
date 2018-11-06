@@ -7,6 +7,7 @@ import tkinter as tk
 class LineGraph(tk.Frame):
 
     def __init__(self, parent):
+        print('Initializing class LineGraph')
         super().__init__(parent)
 
         self.x_data = [0.0]

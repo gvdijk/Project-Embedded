@@ -5,6 +5,7 @@ import datetime
 class Header(tk.Frame):
 
     def __init__(self, parent):
+        print('Initializing class Header')
         super().__init__(parent)
         self.name_label = tk.Label(self, text='Header Text')
 

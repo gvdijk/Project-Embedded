@@ -28,9 +28,10 @@ class ControlUnit:
         SET_SENSOR_THRESHOLD = 12
 
     def __init__(self, unit_type: Type):
+        print('Initializing class Control unit of type ' + unit_type.__str__())
         self.type = unit_type
         self.data = []
-        self.on_data_added_listeners = [Callable]
+        self.on_data_added_listeners = []
 
     def add_data(self, value):
         self.data.append(value)

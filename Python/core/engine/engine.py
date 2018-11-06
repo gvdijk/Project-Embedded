@@ -4,7 +4,9 @@ from Python.core.controlunit.controlunit import ControlUnit
 class Engine:
 
     def __init__(self):
-        self.control_units = [ControlUnit]
+        print('Initializing class Engine')
+
+        self.control_units = []
         self.control_units.append(ControlUnit(ControlUnit.Type.LIGHT))
         self.control_units.append(ControlUnit(ControlUnit.Type.TEMPERATURE))
 
