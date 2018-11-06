@@ -20,11 +20,11 @@ class Engine:
 
     def add_control_unit(self, control_unit: ControlUnit):
         self.__control_units.append(control_unit)
-        self.on_control_unit_added.call(control_unit)
+        self.on_control_unit_added.call(control_unit=control_unit)
 
     def remove_control_unit(self, control_unit: ControlUnit):
         self.__control_units.remove(control_unit)
-        self.on_control_unit_removed.call(control_unit)
+        self.on_control_unit_removed.call(control_unit=control_unit)
 
     def tick(self):
         self.poll_control_units()

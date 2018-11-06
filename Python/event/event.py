@@ -17,6 +17,6 @@ class Event:
     def remove_listener(self, listener: Callable):
         self.__listeners.remove(listener)
 
-    def call(self, *args):
+    def call(self, **kwargs):
         for listener in self.__listeners:
-            listener(args)
+            listener(kwargs)

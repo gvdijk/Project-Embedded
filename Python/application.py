@@ -11,18 +11,19 @@ class Application(Menu):
 
     def __init__(self, tk_root):
         print('Initializing class Application')
-        super().__init__(tk_root)
+        super().__init__(tk_root, header=False)
 
         self.engine = Engine()
         self.menu_stack = MenuStack(self)
 
         self.menu_stack.next(MainMenu(self))
-        self.menu_stack.back()
 
         self.fake_data()
 
     def fake_data(self):
         self.engine.add_control_unit(ControlUnit(ControlUnit.Type.TEMPERATURE))
+        self.engine.add_control_unit(ControlUnit(ControlUnit.Type.LIGHT))
+
 
 if __name__ == "__main__":
     root = tk.Tk()

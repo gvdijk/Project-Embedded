@@ -1,9 +1,4 @@
 from enum import Enum
-import time
-from typing import Callable
-
-import serial
-
 
 class ControlUnit:
     pass
@@ -31,12 +26,9 @@ class ControlUnit:
         print('Initializing class Control unit of type ' + unit_type.__str__())
         self.type = unit_type
         self.data = []
-        self.on_data_added_listeners = []
 
     def add_data(self, value):
         self.data.append(value)
-        for listener in self.on_data_added_listeners:
-            listener(value)
 
     def __send_instruction(self, instruction: Instruction):
         pass  # TODO Implement
