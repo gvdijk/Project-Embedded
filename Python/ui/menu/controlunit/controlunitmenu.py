@@ -8,5 +8,10 @@ class ControlUnitMenu(Menu):
     def __init__(self, parent: tk.Frame, control_unit: ControlUnit):
         super().__init__(parent)
         self.control_unit = control_unit
+        self.control_unit.on_data_added_listeners.append(self.update_line_graph())
+
         self.line_graph = LineGraph(self)
         self.line_graph.grid(row=1, column=0)
+
+    def update_line_graph(self):
+        pass
