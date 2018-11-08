@@ -14,13 +14,12 @@ class Application(Menu):
         super().__init__(tk_root, header=False)
 
         self.engine = Engine()
-        self.after(5000, self.engine.tick())
 
         self.menu_stack = MenuStack(self)
-
         self.menu_stack.next(MainMenu(MenuStack.root))
 
-        self.fake_data()
+        self.engine.start()
+
 
     def fake_data(self):
         self.engine.add_control_unit(ControlUnit(ControlUnit.Type.TEMPERATURE))
