@@ -14,9 +14,11 @@ class Application(Menu):
         super().__init__(tk_root, header=False)
 
         self.engine = Engine()
+        self.after(5000, self.engine.tick())
+
         self.menu_stack = MenuStack(self)
 
-        self.menu_stack.next(MainMenu(self))
+        self.menu_stack.next(MainMenu(MenuStack.root))
 
         self.fake_data()
 
@@ -27,5 +29,6 @@ class Application(Menu):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    Application(root).pack(side="top", fill="both", expand=True)
+    root.geometry('{}x{}'.format(460, 350))
+    Application(root).pack()
     root.mainloop()

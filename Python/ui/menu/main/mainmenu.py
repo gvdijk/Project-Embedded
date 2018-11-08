@@ -8,4 +8,4 @@ class MainMenu(Menu):
         print('Initializing class MainMenu')
         super().__init__(parent)
         self.control_unit_select = ControlUnitSelect(self)
-        self.control_unit_select.grid(row=2, column=1)
+        self.control_unit_select.grid(row=2, column=0)

@@ -4,9 +4,9 @@ import datetime
 
 class Header(tk.Frame):
 
-    def __init__(self, parent):
+    def __init__(self, parent, **kwargs):
         print('Initializing class Header')
-        super().__init__(parent)
+        super().__init__(parent, kwargs)
         self.name_label = tk.Label(self, text='Header Text')
 
         self.time_text = tk.StringVar()

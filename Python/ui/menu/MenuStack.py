@@ -5,23 +5,22 @@ import tkinter as tk
 class MenuStack:
     class __MenuStack:
 
-        def __init__(self, root_menu: Menu):
-            self.stack = [root_menu]
+        def __init__(self, root: Menu):
+            self.stack = [root]
             pass
 
     instance: __MenuStack = None
+    root: Menu = None
 
-    def __init__(self, root_menu: Menu):
+    def __init__(self, root: Menu):
+        MenuStack.root = root
         if not MenuStack.instance:
-            MenuStack.instance = MenuStack.__MenuStack(root_menu)
-
-    def __getattr__(self, item):
-        return getattr(self.instance, item)
+            MenuStack.instance = MenuStack.__MenuStack(root)
 
     @staticmethod
     def next(menu: Menu) -> Menu:
         MenuStack.instance.stack.append(menu)
-        menu.pack(side="top", fill="both", expand=True)
+        menu.grid(row=1)
         return menu
 
     @staticmethod
