@@ -1,11 +1,20 @@
 import time
 import asyncio
 import serial
+import serial.tools.list_ports
+
+from Python.event.event import Event
 
 
 class Connector:
 
+    class ConnectionLostEvent(Event):
+        def __init__(self):
+            super().__init__()
+
+
     def __init__(self, serialport):
+        self.port = serialport
         self.ser = serial.Serial(
             port=serialport,
             baudrate=19200,
@@ -31,7 +40,16 @@ class Connector:
             '12': self.setSensorThreshold
         }
 
+        self.connection_lost_event = Connector.ConnectionLostEvent()
+
+    def __still_connected(self):
+        return self.port in [p.device for p in serial.tools.list_ports.comports()]
+
     def __sendCommand(self, command, bytes=1):
+        if not self.__still_connected():
+            self.connection_lost_event.call(connector=self)
+            return b'\x00'
+
         if not self.ser.isOpen():
             self.ser.open()
 
@@ -64,6 +82,10 @@ class Connector:
             return None
 
     def __sendCommandAndValue(self, command, value, bytes=1):
+        if not self.__still_connected():
+            self.connection_lost_event.call(connector=self)
+            return b'\x00'
+
         if not self.ser.isOpen():
             self.ser.open()
         self.ser.write(command)

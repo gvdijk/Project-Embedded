@@ -27,6 +27,7 @@ class Engine:
 
     def on_control_unit_found(self, event_data):
         control_unit = event_data['control_unit']
+        self.add_control_unit(control_unit)
 
     def add_control_unit(self, control_unit: ControlUnit):
         self.__control_units.append(control_unit)

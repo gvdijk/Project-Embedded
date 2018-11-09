@@ -6,10 +6,10 @@ class Event:
 
     events = {}
 
-    def __init__(self, name: str):
+    def __init__(self, global_identifier: str = None):
         self.__listeners = []
-        self.name = name
-        Event.events[name] = self
+        self.name = global_identifier or self.__str__()
+        Event.events[self.name] = self
 
     def add_listener(self, listener: Callable):
         self.__listeners.append(listener)

@@ -10,8 +10,8 @@ from Python.event.event import Event
 
 class ControlUnitFinder:
     class ControlUnitFoundEvent(Event):
-        def __init__(self, name: str):
-            super().__init__(name)
+        def __init__(self, global_identifier: str):
+            super().__init__(global_identifier)
 
     def __init__(self):
         self.control_units = {}
@@ -29,6 +29,8 @@ class ControlUnitFinder:
                 t = connector.readSensorType()
 
                 if t is not None:
+                    connector.connection_lost_event.add_listener(self.on_connection_lost)
+
                     control_unit = ControlUnit(ControlUnit.Type(t), connector)
                     self.control_units[port.device] = control_unit
                     self.control_unit_found_event.call(control_unit=control_unit)
@@ -36,6 +38,11 @@ class ControlUnitFinder:
             if port.device not in self.control_units.keys():
                 thread = threading.Thread(target=call_event)
                 thread.start()
+
+
+    def on_connection_lost(self, event_data):
+        connector = event_data['connector']
+        print(connector)
 
 
 
