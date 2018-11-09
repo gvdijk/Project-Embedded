@@ -8,7 +8,7 @@
 #include "embedded.h"
 
 // Configureer de ADC (Analog to Digital) unit op de arduino uno
-void ADC_init(void){
+void ADC_init(void) {
 	ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);	// ADC prescaler register instellen op 128x prescaler voor 125 KHz input
 	ADCSRA |= (1 << ADATE);									// ADC van manual mode naar auto-trigger zetten
 	ADCSRB |= (0 << ADTS0) | (0 << ADTS1) | (0 << ADTS2);	// ADC auto-trigger instellen op free-running mode (blijft oneindig meten)
@@ -21,6 +21,6 @@ void ADC_init(void){
 }
 
 // Return de waarde van de lichtgevoelige sensor
-uint16_t get_ADCValue(){
-	return (ADCH << 8) + ADCL;
+uint16_t get_ADCValue(void) {
+	return ADC;
 }

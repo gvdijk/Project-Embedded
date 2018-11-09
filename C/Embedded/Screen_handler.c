@@ -2,29 +2,42 @@
  * Screen_handler.c
  *
  * Created: 26-10-2018 15:41:33
- *  Author: justin
+ * Author: Justin, Gerard
  */ 
 
 #include "embedded.h"
+#include "Screen_handler.h"
 #include "HC_SR04.h"
+#include "ADC_handler.h"
 
-bool screen_state = false;
-uint16_t brightness_trigger = 700;
+typedef enum { retracted, rolling, extended, floating } state;
+
+bool screen_stop = false;
+bool auto_sensor = false;
+state screen_state = false;
+uint16_t sensor_trigger = 50;
+uint16_t sensor_margin = 1;
 
 // Initialiseer de poorten om de lampjes aan te sturen
-void LED_init(){
+void LED_init(void) {
 	DDRD |= (1 << PORTD5) |(1 << PORTD6) |(1 << PORTD7);	//Zet poorten 6, 7 en 8 van PORTD als output poort
-	set_led();	// Zet het juiste lampje aan om de status van het zonnescherm te weergeven
+	set_led(false);	// Zet het juiste lampje aan om de status van het zonnescherm te weergeven
 }
 
 // Check of er aan de hand van de sensordata iets met het scherm gedaan moet worden
-void handle_sensors(){
-	uint16_t brightnessvalue = get_ADCValue();
-	if(brightnessvalue < brightness_trigger && screen_state){
-		screen_roll_in();
-	}
-	else if(brightnessvalue > brightness_trigger && !screen_state){
-		screen_roll_out();
+void handle_sensors(void) {
+	if (auto_sensor) {
+		uint16_t temperaturevalue = get_ADCValue();
+		if(temperaturevalue < (sensor_trigger + sensor_margin)){
+			if (screen_state == extended || screen_state == floating) {
+				screen_roll_in();
+			}
+		}
+		else if(temperaturevalue > (sensor_trigger - sensor_margin)){
+			if (screen_state == retracted || screen_state == floating) {
+				screen_roll_out();
+			}
+		}
 	}
 }
 
@@ -33,60 +46,91 @@ void handle_sensors(){
 *	Groen = Ingeklapt
 *	Rood = Uitgeklapt
 */
-void set_led(){
-	if (screen_state){
+void set_led(bool status) {
+	if (status) {
 		PORTD |= (1 << PORTD7);		// Zet poort D7 naar 1
 		PORTD &= ~(1 << PORTD6);	// Zet poort D6 naar 0
-	}else{
+	} else {
 		PORTD |= (1 << PORTD6);		// Zet poort D6 naar 0
 		PORTD &= ~(1 << PORTD7);	// Zet poort D7 naar 1
 	}
 }
 
 // Rol het scherm in als het uitgeklapt is
-void screen_roll_in(){
-	screen_state = false;
-	set_led();
-	blink_led();
+void screen_roll_in(void) {
+	screen_state = rolling;
+	if (!screen_stop) {
+		if (Ultrasoon_Trigger() > getMinimumDistance()) {
+			status_led_toggle();
+			SCH_Add_Task(screen_roll_in, 250, 0);
+		} else {
+			status_led_off();
+			screen_state = retracted;
+			set_led(false);
+		}
+	} else {
+		screen_stop = false;
+		screen_state = floating;
+		status_led_off();
+	}
 }
 
 // Rol het scherm uit als het ingeklapt is
-void screen_roll_out(){
-	screen_state = true;
-	set_led();
-	blink_led();
-}
-
-// Knipper een geel lampje zolang het scherm bezig is met in- of uitrollen
-void blink_led(){
-	int temp = 0;
-	int i = 0;
-	while(temp < 10){
-		SCH_Add_Task(reverse_led, i, 0);
-		i += 250;
-		temp++;
+void screen_roll_out(void) {
+	screen_state = rolling;
+	set_led(true);
+	if (!screen_stop) {
+		if (Ultrasoon_Trigger() < getMaximumDistance()) {
+			status_led_toggle();
+			SCH_Add_Task(screen_roll_out, 250, 0);
+		} else {
+			status_led_off();
+			screen_state = extended;
+		}
+	} else {
+		screen_stop = false;
+		screen_state = floating;
+		status_led_off();
 	}
 }
 
 // Zet het gele lampje aan als het uit is of uit als het aan is
-void reverse_led(){
+void status_led_toggle(void) {
 	PORTD ^= (1 << PORTD5);
 }
 
-/*	Return de status van het zonnescherm
-*
-*	false = ingeklapt	
-*	true = uitgeklapt
-*/
-bool get_screenstate(){
-	return screen_state;
+// Zet het gele lampje aan als het uit is of uit als het aan is
+void status_led_off(void) {
+	PORTD &= ~(1 << PORTD5);
 }
 
-/*	Zet de status van het zonnescherm
+/*	Zet de status van de stop controlle
 *
-*	false = ingeklapt
-*	true = uitgeklapt
+*	false = ga door naar behoren
+*	true = annuleer het bewegen van het scherm
 */
-void set_screenstate(bool state){
-	screen_state = state;
+void set_stopstate(bool state) {
+	screen_stop = state;
+}
+
+/*	Switch het automatische inklappen op basis van de sensor
+*
+*	Returned de nieuwe status
+*/
+bool toggle_auto_sensor(void) {
+	auto_sensor = (auto_sensor == true) ? false : true;
+	return auto_sensor;
+}
+
+
+/*	Zet de sensor threshold van de aangesloten sensor
+*/
+void set_sensor_threshold(uint16_t val) {
+	sensor_trigger = val;
+}
+
+/*	Verkrijg de sensor threshold van de aangesloten sensor
+*/
+uint16_t get_sensor_threshold(void) {
+	return sensor_trigger;
 }
