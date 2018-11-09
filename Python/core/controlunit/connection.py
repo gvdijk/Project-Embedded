@@ -1,9 +1,9 @@
 import time
-
+import asyncio
 import serial
 
 
-class Connector():
+class Connector:
 
     def __init__(self, serialport):
         self.ser = serial.Serial(
@@ -35,11 +35,9 @@ class Connector():
         if not self.ser.isOpen():
             self.ser.open()
 
-        print('a')
         self.ser.write(command)
-        print('b')
         while self.ser.isOpen():
-            time.sleep(.010)
+            asyncio.sleep(.010)
             result = self.ser.read(bytes)
 
             if result == b'':

@@ -18,8 +18,7 @@ class Application(Menu):
         self.menu_stack = MenuStack(self)
         self.menu_stack.next(MainMenu(MenuStack.root))
 
-        self.engine.start()
-
+        self.after(10, self.engine.tick)
 
     def fake_data(self):
         self.engine.add_control_unit(ControlUnit(ControlUnit.Type.TEMPERATURE))

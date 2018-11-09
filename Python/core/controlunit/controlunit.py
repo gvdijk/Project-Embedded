@@ -10,12 +10,12 @@ class ControlUnit:
         LIGHT = 1
         TEMPERATURE = 2
 
-    def __init__(self, unit_type: Type, serial_number: str):
+    def __init__(self, unit_type: Type, connector: Connector):
         print('Initializing class Control unit of type ' + unit_type.__str__())
         self.type = unit_type
         self.id = id
         self.data = []
-        self.connection = Connector(serial_number)
+        self.connector = connector
 
     def add_data(self, value):
         self.data.append(value)
