@@ -1,5 +1,5 @@
 #include "embedded.h"
-#include "USART.h"
+#include "UART.h"
 #include "HC_SR04.h"
 #include "Screen_handler.h"
 #include "ADC_handler.h"
@@ -10,9 +10,9 @@ uint16_t value = 0;
 uint16_t outgoing = 0;
 
 /*
- * Initialiseer de USART communicatie
+ * Initialiseer de UART communicatie
  */
-void USART_Init(void) {
+void UART_Init(void) {
 	// Zet de baud rate
 	UBRR0H = (UBRRVAL >> 8);
 	UBRR0L = (UBRRVAL & 0xFF);
@@ -52,7 +52,7 @@ void handleInstruction(void) {
 	value = 0;
 	// Return 1111 1111 als bevestiging vvan uitvoering
 	outgoing = 0xff;
-	SCH_Add_Task(USART_Transmit_Low, 0, 0);
+	SCH_Add_Task(UART_Transmit_Low, 0, 0);
 }
 
 /*
@@ -88,19 +88,19 @@ void handleCommand(void) {
 			} else if ((instruction >> 4) == 0xf) {
 				// Return 1111 0000 als aanvraag voor meer input
 				outgoing = 0xf0;
-				SCH_Add_Task(USART_Transmit_Low, 0, 0);
+				SCH_Add_Task(UART_Transmit_Low, 0, 0);
 			}
 		}
 	} else {
 		if (incoming == 0xe1 || incoming == 0xe2 || incoming == 0xf1) {
 			instruction = incoming;
 			outgoing = 0xf0;
-			SCH_Add_Task(USART_Transmit_Low, 0, 0);
+			SCH_Add_Task(UART_Transmit_Low, 0, 0);
 		} else {
 			switch(incoming) {
 				case 0x81:
 					// 0x61 voor Licht, 0x62 voor Temp
-					outgoing = 0x62;
+					outgoing = 0x61;
 					break;
 				
 				case 0x82:
@@ -148,10 +148,10 @@ void handleCommand(void) {
 					break;
 			}
 			if ((incoming) == 0x82 || (incoming) == 0x83) {
-				SCH_Add_Task(USART_Transmit_High, 0, 0);
-				SCH_Add_Task(USART_Transmit_Low, 1, 0);
+				SCH_Add_Task(UART_Transmit_High, 0, 0);
+				SCH_Add_Task(UART_Transmit_Low, 1, 0);
 			} else {
-				SCH_Add_Task(USART_Transmit_Low, 0, 0);
+				SCH_Add_Task(UART_Transmit_Low, 0, 0);
 			}
 		}
 	}
@@ -160,7 +160,7 @@ void handleCommand(void) {
 /*
  * Wacht op een lege transmit buffer, stuur dan de high byte
  */
-void USART_Transmit_High(void) {
+void UART_Transmit_High(void) {
 	while ( !(UCSR0A &  (1 << UDRE0)));
 	UDR0 = (outgoing >> 8);
 }
@@ -168,7 +168,7 @@ void USART_Transmit_High(void) {
 /*
  * Wacht op een lege transmit buffer, stuur dan de low byte
  */
-void USART_Transmit_Low(void) {
+void UART_Transmit_Low(void) {
 	while ( !(UCSR0A &  (1 << UDRE0)));
 	UDR0 = (outgoing & 0xff);
 }
@@ -176,7 +176,7 @@ void USART_Transmit_Low(void) {
 /*
  * Wacht op het ontvangen van data, zet het resultaat, en voeg de taak toe aan de scheduler
  */
-void USART_Receive(void) {
+void UART_Receive(void) {
 	if (UCSR0A & (1 << RXC0)) {
 		incoming = UDR0;
 		SCH_Add_Task(handleCommand, 0, 0);

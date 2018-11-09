@@ -15,8 +15,8 @@ typedef enum { retracted, rolling, extended, floating } state;
 bool screen_stop = false;
 bool auto_sensor = false;
 state screen_state = false;
-uint16_t sensor_trigger = 50;
-uint16_t sensor_margin = 1;
+uint16_t sensor_trigger = 725;
+uint16_t sensor_margin = 25;
 
 // Initialiseer de poorten om de lampjes aan te sturen
 void LED_init(void) {
@@ -27,13 +27,13 @@ void LED_init(void) {
 // Check of er aan de hand van de sensordata iets met het scherm gedaan moet worden
 void handle_sensors(void) {
 	if (auto_sensor) {
-		uint16_t temperaturevalue = get_ADCValue();
-		if(temperaturevalue < (sensor_trigger + sensor_margin)){
+		uint16_t lightvalue = get_ADCValue();
+		if(lightvalue < (sensor_trigger + sensor_margin)){
 			if (screen_state == extended || screen_state == floating) {
 				screen_roll_in();
 			}
 		}
-		else if(temperaturevalue > (sensor_trigger - sensor_margin)){
+		else if(lightvalue > (sensor_trigger - sensor_margin)){
 			if (screen_state == retracted || screen_state == floating) {
 				screen_roll_out();
 			}
