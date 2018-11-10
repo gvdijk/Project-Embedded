@@ -163,6 +163,12 @@
     <Compile Include="Screen_handler.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Servo_handler.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Servo_handler.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="UART.c">
       <SubType>compile</SubType>
     </Compile>

@@ -157,10 +157,11 @@ void SCH_Init_T1(void)
       SCH_Delete_Task(i);
    }
 
-   // Set up Timer 1
-   OCR1A = (uint16_t)500;   		     // 2ms = (250/16.000.000) * 500
-   TCCR1B = (1 << CS11) | (1 << CS10) | (1 << WGM12);  // prescale op 64, top counter = value OCR1A (CTC mode)
-   TIMSK1 = 1 << OCIE1A;   		     // Timer 1 Output Compare A Match Interrupt Enable
+   // Set up Timer 2
+   OCR2A = (uint8_t)250;   		     // 2ms = (128/16.000.000) * 250
+   TCCR2A = (1 << WGM21);
+   TCCR2B = (1 << CS20) | (1 << CS22);  // prescale op 128, top counter = value OCR2A (CTC mode)
+   TIMSK2 = 1 << OCIE2A;   		     // Timer 1 Output Compare A Match Interrupt Enable
 }
 
 /*------------------------------------------------------------------*-
@@ -190,7 +191,7 @@ void SCH_Start(void)
 
 -*------------------------------------------------------------------*/
 
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER2_COMPA_vect)
 {
    unsigned char Index;
    for(Index = 0; Index < SCH_MAX_TASKS; Index++)

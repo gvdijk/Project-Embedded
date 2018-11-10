@@ -7,7 +7,7 @@
 #include "embedded.h"
 #include "HC_SR04.h"
 
-uint8_t min_dis = 6;
+uint8_t min_dis = 3;
 uint8_t max_dis = 160;
 
 /*

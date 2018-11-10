@@ -9,19 +9,21 @@
 #include "Screen_handler.h"
 #include "HC_SR04.h"
 #include "ADC_handler.h"
+#include "Servo_handler.h"
 
 typedef enum { retracted, rolling, extended, floating } state;
 
 bool screen_stop = false;
-bool auto_sensor = false;
-state screen_state = false;
-uint16_t sensor_trigger = 725;
+bool auto_sensor = true;
+state screen_state = extended;
+uint16_t sensor_trigger = 300;
 uint16_t sensor_margin = 25;
+uint8_t led_indicator = 0;
 
 // Initialiseer de poorten om de lampjes aan te sturen
 void LED_init(void) {
 	DDRD |= (1 << PORTD5) |(1 << PORTD6) |(1 << PORTD7);	//Zet poorten 6, 7 en 8 van PORTD als output poort
-	set_led(false);	// Zet het juiste lampje aan om de status van het zonnescherm te weergeven
+	set_led(true);	// Zet het juiste lampje aan om de status van het zonnescherm te weergeven
 }
 
 // Check of er aan de hand van de sensordata iets met het scherm gedaan moet worden
@@ -30,11 +32,13 @@ void handle_sensors(void) {
 		uint16_t lightvalue = get_ADCValue();
 		if(lightvalue < (sensor_trigger + sensor_margin)){
 			if (screen_state == extended || screen_state == floating) {
+				set_servoTarget(4800);
 				screen_roll_in();
 			}
 		}
 		else if(lightvalue > (sensor_trigger - sensor_margin)){
 			if (screen_state == retracted || screen_state == floating) {
+				set_servoTarget(3000);
 				screen_roll_out();
 			}
 		}
@@ -61,8 +65,13 @@ void screen_roll_in(void) {
 	screen_state = rolling;
 	if (!screen_stop) {
 		if (Ultrasoon_Trigger() > getMinimumDistance()) {
-			status_led_toggle();
-			SCH_Add_Task(screen_roll_in, 250, 0);
+			if (led_indicator >= 25){
+				status_led_toggle();
+				led_indicator = 0;
+			}
+			led_indicator += 1;
+			SCH_Add_Task(servo_rollIn, 0, 0);
+			SCH_Add_Task(screen_roll_in, 10, 0);
 		} else {
 			status_led_off();
 			screen_state = retracted;
@@ -81,8 +90,13 @@ void screen_roll_out(void) {
 	set_led(true);
 	if (!screen_stop) {
 		if (Ultrasoon_Trigger() < getMaximumDistance()) {
-			status_led_toggle();
-			SCH_Add_Task(screen_roll_out, 250, 0);
+			if (led_indicator >= 25){
+				status_led_toggle();
+				led_indicator = 0;
+			}
+			led_indicator += 1;
+			SCH_Add_Task(servo_rollOut, 0, 0);
+			SCH_Add_Task(screen_roll_out, 10, 0);
 		} else {
 			status_led_off();
 			screen_state = extended;
