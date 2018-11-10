@@ -16,3 +16,5 @@ SET_MAX_DISTANCE = Instruction(b'\xe2', 1)
 SET_SENSOR_THRESHOLD = Instruction(b'\xf1', 2)
 
 TOGGLE_AUTO_ROLL = Instruction(b'\xc4', 1)
+SCREEN_ROLL_OUT = Instruction(b'\xc1', 1)
+SCREEN_ROLL_IN = Instruction(b'\xc2', 1)

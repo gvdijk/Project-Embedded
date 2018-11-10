@@ -135,6 +135,16 @@ class ControlUnit:
         response = self.send_instruction(TOGGLE_AUTO_ROLL)
         return self.__hex_bool_convert(response)
 
+    def screen_roll_out(self):
+        print('rolling out')
+        response = self.send_instruction(SCREEN_ROLL_OUT)
+        return self.__hex_bool_convert(response)
+
+    def screen_roll_in(self):
+        print('rolling in')
+        response = self.send_instruction(SCREEN_ROLL_IN)
+        return self.__hex_bool_convert(response)
+
     def __hex_bool_convert(self, hex):
         if hex == b'\xff':
             return True
@@ -151,11 +161,6 @@ class ControlUnit:
         else:
             return None
 
-    # async def screen_roll_out(self):
-    #     return self.__hex_bool_convert(self.__send_command(b'\xc1'))
-    #
-    # def screen_roll_in(self):
-    #     return self.__hex_bool_convert(self.__send_command(b'\xc2'))
     #
     # def screen_stop_roll(self):
     #     return self.__hex_bool_convert(self.__send_command(b'\xc3'))

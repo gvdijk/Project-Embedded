@@ -15,7 +15,7 @@ class ControlUnitMenu(Menu):
         self.line_graph.grid()
         self.line_graph.limit = 100
 
-        self.control_buttons = ControlButtons(self.footer)
+        self.control_buttons = ControlButtons(self.footer, control_unit)
         self.control_buttons.grid()
 
         self.control_unit.data_added_event.add_listener(
