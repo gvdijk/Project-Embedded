@@ -7,3 +7,6 @@ Python/core/__pycache__
 Python/core/controlunit/__pycache__
 Python/ui/menu/main/component/__pycache__
 *.pyc
+*.py
+*.exe
+venv

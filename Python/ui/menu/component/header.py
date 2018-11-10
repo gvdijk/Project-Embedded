@@ -4,10 +4,10 @@ import datetime
 
 class Header(tk.Frame):
 
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, text='', **kwargs):
         print('Initializing class Header')
         super().__init__(parent, kwargs)
-        self.name_label = tk.Label(self, text='Header Text')
+        self.name_label = tk.Label(self, text=text)
 
         self.time_text = tk.StringVar()
         self.time_label = tk.Label(self, textvariable=self.time_text)

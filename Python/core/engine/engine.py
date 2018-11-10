@@ -1,3 +1,4 @@
+import time
 from threading import Thread
 
 from Python.core.controlunit.controlunit import ControlUnit
@@ -19,8 +20,8 @@ class Engine:
 
         self.running = False
         self.__control_units = []
-        self.serial_connection = ControlUnitFinder()
-        self.serial_connection.control_unit_found_event.add_listener(self.on_control_unit_found)
+        self.control_unit_finder = ControlUnitFinder()
+        self.control_unit_finder.control_unit_found_event.add_listener(self.on_control_unit_found)
 
         self.on_control_unit_added = Engine.ControlUnitAddedEvent()
         self.on_control_unit_removed = Engine.ControlUnitRemovedEvent()
@@ -37,11 +38,28 @@ class Engine:
         self.__control_units.remove(control_unit)
         self.on_control_unit_removed.call(control_unit=control_unit)
 
+    def start(self):
+        self.running = True
+        thread = Thread(target=self.tick)
+        thread.start()
+
     def tick(self):
-        self.serial_connection.poll()
+        counter = 0
+        while self.running:
+            for control_unit in self.__control_units:
+                control_unit.distance = control_unit.get_distance()
 
+            if counter % 10 == 0:
+                self.control_unit_finder.poll()
 
+            if counter % 10 == 0:
+                for control_unit in self.__control_units:
+                    if control_unit.type == ControlUnit.Type.TEMPERATURE:
+                        control_unit.add_data(control_unit.get_temperature())
 
+            time.sleep(1)
+
+            counter += 1
 
 
 

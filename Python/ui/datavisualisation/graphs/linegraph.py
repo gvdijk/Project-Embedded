@@ -24,6 +24,8 @@ class LineGraph(tk.Frame):
         # toolbar.update()
         # canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
+        self.draw()
+
     def add_value(self, y: float):
         self.x_data.append(self.x_data[len(self.x_data) - 1] + 1)
         self.y_data.append(y)
@@ -32,5 +34,7 @@ class LineGraph(tk.Frame):
             self.x_data.pop(0)
             self.y_data.pop(0)
 
+    def draw(self):
         self.plot.plot(self.x_data, self.y_data, 'r')
         self.canvas.draw()
+        self.after(1000, self.draw)

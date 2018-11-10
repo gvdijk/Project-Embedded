@@ -1,58 +1,33 @@
-from tkinter import *
+import tkinter as tk
 
 from Python.ui.menu.component.header import Header
 
 
-class Menu(Frame):
+class Menu(tk.Frame):
 
-    def __init__(self, root: Frame, header=True):
+    def __init__(self, root: tk.Frame, name: str, base_layout=True):
         print('Initializing class Menu')
         super().__init__(root)
 
-        if header:
-            self.header = Header(self, bg='cyan', width=450, height=50, pady=3)
-            self.header.grid(row=1, sticky="ew")
+        if not base_layout:
+            return
 
+        # create all of the main containers
+        self.top_frame = tk.Frame(root, bg='cyan', width=450, height=50, pady=3)
+        self.center = tk.Frame(root, bg='red', width=450, height=450, pady=3)
+        self.footer = tk.Frame(root, bg='pink', width=450, height=50, pady=3)
 
+        # layout all of the main containers
+        root.grid_rowconfigure(1, weight=1)
+        root.grid_columnconfigure(0, weight=1)
 
-        #
-        # # create all of the main containers
-        # top_frame = Frame(root, bg='cyan', width=450, height=50, pady=3)
-        # center = Frame(root, bg='gray2', width=50, height=40, padx=3, pady=3)
-        # btm_frame = Frame(root, bg='white', width=450, height=45, pady=3)
-        # btm_frame2 = Frame(root, bg='lavender', width=450, height=60, pady=3)
-        #
-        # # layout all of the main containers
-        # root.grid_rowconfigure(1, weight=1)
-        # root.grid_columnconfigure(0, weight=1)
-        #
-        # top_frame.grid(row=0, sticky="ew")
-        # center.grid(row=1, sticky="nsew")
-        # btm_frame.grid(row=3, sticky="ew")
-        # btm_frame2.grid(row=4, sticky="ew")
-        #
-        # # create the widgets for the top frame
-        # model_label = Label(top_frame, text='Model Dimensions')
-        # width_label = Label(top_frame, text='Width:')
-        # length_label = Label(top_frame, text='Length:')
-        # entry_W = Entry(top_frame, background="pink")
-        # entry_L = Entry(top_frame, background="orange")
-        #
-        # # layout the widgets in the top frame
-        # model_label.grid(row=0, columnspan=3)
-        # width_label.grid(row=1, column=0)
-        # length_label.grid(row=1, column=2)
-        # entry_W.grid(row=1, column=1)
-        # entry_L.grid(row=1, column=3)
-        #
-        # # create the center widgets
-        # center.grid_rowconfigure(0, weight=1)
-        # center.grid_columnconfigure(1, weight=1)
-        #
-        # ctr_left = Frame(center, bg='blue', width=100, height=190)
-        # ctr_mid = Frame(center, bg='yellow', width=250, height=190, padx=3, pady=3)
-        # ctr_right = Frame(center, bg='green', width=100, height=190, padx=3, pady=3)
-        #
-        # ctr_left.grid(row=0, column=0, sticky="ns")
-        # ctr_mid.grid(row=0, column=1, sticky="nsew")
-        # ctr_right.grid(row=0, column=2, sticky="ns")
+        self.top_frame.grid(row=0, sticky="ew")
+        self.center.grid(row=1, sticky="nsew")
+        self.footer.grid(row=3, sticky="ew")
+
+        # create the self.self.center widgets
+        self.center.grid_rowconfigure(0, weight=1)
+        self.center.grid_columnconfigure(1, weight=1)
+
+        header = Header(self.top_frame, text=name)
+        header.grid(row=0, column=0, sticky="ew")

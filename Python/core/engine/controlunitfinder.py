@@ -1,9 +1,9 @@
-import threading
+import asyncio
 import time
+from threading import Thread
 
 import serial.tools.list_ports
 
-from Python.core.controlunit.connection import Connector
 from Python.core.controlunit.controlunit import ControlUnit
 from Python.event.event import Event
 
@@ -23,68 +23,19 @@ class ControlUnitFinder:
 
         for port in ports_found:
 
-            def call_event():
-                connector = Connector(port.device)
+            def check_type():
+                control_unit = ControlUnit(port.device)
                 time.sleep(2)
-                t = connector.readSensorType()
+                control_unit.type = control_unit.get_sensor_type()
 
-                if t is not None:
-                    connector.connection_lost_event.add_listener(self.on_connection_lost)
-
-                    control_unit = ControlUnit(ControlUnit.Type(t), connector)
+                if control_unit.type is not ControlUnit.Type.UNIDENTIFIED:
+                    control_unit.connection_lost_event.add_listener(self.on_connection_lost)
                     self.control_units[port.device] = control_unit
                     self.control_unit_found_event.call(control_unit=control_unit)
 
             if port.device not in self.control_units.keys():
-                thread = threading.Thread(target=call_event)
-                thread.start()
-
+                thread = Thread(target=check_type).start()
 
     def on_connection_lost(self, event_data):
         connector = event_data['connector']
         print(connector)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # def poll_ports(self):
-    #     print('polling')
-    #     ports_found = serial.tools.list_ports.comports()
-    #
-    #     def add_port(port):
-    #         print('adding')
-    #         con: Connector = Connector(port.device)
-    #         time.sleep(2)
-    #         type = con.readSensorType()
-    #         print('type')
-    #         print(type)
-    #         if type is not None:
-    #             ports[port.device] = (con, port.serial_number)
-    #             print("Port {} successfully verified as {} with id {} \n".format(port.device, type, port.serial_number))
-    #             print('maxDistance')
-    #             print(con.readMinDistance())
-    #             print('inDistance')
-    #             print(con.readMaxDistance())
-    #
-    #     for port in ports_found:
-    #         if port.device not in ports.keys():
-    #             add_port(port)
-    #         elif ports[port.device][1] != port.serial_number:
-    #             ports[port.device][0].close()
-    #             add_port(port)
