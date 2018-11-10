@@ -12,7 +12,7 @@ class LineGraph(tk.Frame):
 
         self.x_data = [0.0]
         self.y_data = [0.0]
-        self.limit = None
+        self.limit = 100
 
         figure = Figure(figsize=(5, 4), dpi=100)
         self.plot = figure.add_subplot(1, 1, 1)
@@ -35,6 +35,15 @@ class LineGraph(tk.Frame):
             self.y_data.pop(0)
 
     def draw(self):
-        self.plot.plot(self.x_data, self.y_data, 'r')
+        if len(self.x_data) == 0:
+            return
+
+        from_index = len(self.x_data) - self.limit
+        if from_index < 0:
+            from_index = 0
+
+        self.plot.clear()
+
+        self.plot.plot(self.x_data[from_index: -1], self.y_data[from_index: -1], 'r')
         self.canvas.draw()
         self.after(1000, self.draw)

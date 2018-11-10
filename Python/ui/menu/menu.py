@@ -1,7 +1,5 @@
 import tkinter as tk
 
-from Python.ui.menu.component.header import Header
-
 
 class Menu(tk.Frame):
 
@@ -28,6 +26,3 @@ class Menu(tk.Frame):
         # create the self.self.center widgets
         self.center.grid_rowconfigure(0, weight=1)
         self.center.grid_columnconfigure(1, weight=1)
-
-        header = Header(self.top_frame, text=name)
-        header.grid(row=0, column=0, sticky="ew")

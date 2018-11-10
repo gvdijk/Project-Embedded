@@ -52,7 +52,7 @@ class Engine:
             if counter % 10 == 0:
                 self.control_unit_finder.poll()
 
-            if counter % 10 == 0:
+            if counter % 1 == 0:
                 for control_unit in self.__control_units:
 
                     if control_unit.type == ControlUnit.Type.LIGHT:
