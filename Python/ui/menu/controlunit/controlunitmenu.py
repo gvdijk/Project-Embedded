@@ -43,8 +43,17 @@ class ControlUnitMenu(Menu):
         self.control_buttons.pack()
 
         self.control_unit.data_added_event.add_listener(
-            lambda event_data: self.line_graph.add_value(event_data['datetime'], event_data['value'])
+            lambda event_data: self.add_data(event_data['datetime'], event_data['value'])
         )
+
+    def add_data(self, date_time, value):
+        if self.control_unit.type == ControlUnit.Type.LIGHT:
+            perc = (value / 1023) * 100
+            self.line_graph.add_value(date_time, perc)
+        elif self.control_unit.type == ControlUnit.Type.TEMPERATURE:
+            self.line_graph.add_value(date_time, value)
+
+
 
     def time_05_click(self):
         self.line_graph.limit = int(3600 / 40)

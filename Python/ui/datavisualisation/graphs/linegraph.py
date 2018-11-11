@@ -9,7 +9,6 @@ import matplotlib.dates as mdates
 class LineGraph(tk.Frame):
 
     def __init__(self, parent, x_data=[], y_data=[]):
-        print('Initializing class LineGraph')
         super().__init__(parent)
 
         self.x_data = x_data
@@ -25,7 +24,6 @@ class LineGraph(tk.Frame):
         self.draw_loop()
 
     def add_value(self, x: datetime.datetime, y: float):
-        # x_value = 0 if len(self.x_data) == 0 else self.x_data[-1] + 1
         self.x_data.append(x)
         self.y_data.append(y)
 
