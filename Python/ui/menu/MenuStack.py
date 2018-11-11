@@ -21,7 +21,7 @@ class MenuStack:
     @staticmethod
     def next(menu: Menu):
         MenuStack.instance.stack.append(menu)
-        menu.grid(row=0, sticky="nsew")
+        menu.pack(expand=False)
         return menu
 
     @staticmethod

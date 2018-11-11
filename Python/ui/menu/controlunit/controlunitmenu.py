@@ -12,8 +12,12 @@ class ControlUnitMenu(Menu):
         super().__init__(parent, 'Control unit menu')
         self.control_unit = control_unit
 
+        self.time_05_image =tk.PhotoImage(file='ui/time_5_white.png')
+        self.time_10_image =tk.PhotoImage(file='ui/time_10_white.png')
+        self.time_30_image =tk.PhotoImage(file='ui/time_30_white.png')
+
         header = Header(self.top_frame, text='Control unit menu')
-        header.grid(row=0, column=0, sticky="ew")
+        header.pack(fill='x')
 
         x_data = []
         y_data = []
@@ -22,31 +26,31 @@ class ControlUnitMenu(Menu):
             y_data.append(control_unit.recorded_data[i])
 
         self.line_graph = LineGraph(self.center, x_data=x_data, y_data=y_data)
-        self.line_graph.grid(row=1, sticky="new")
+        self.line_graph.pack(fill='both', expand=True)
         self.line_graph.limit = 100
 
         button_wrapper = tk.Frame(self.center)
-        hour_button = tk.Button(button_wrapper, text='Last Hour', command=self.hour_button_click)
-        day_button = tk.Button(button_wrapper, text='Last Day', command=self.day_button_click)
-        week_button = tk.Button(button_wrapper, text='Last Week', command=self.week_button_click)
+        time_05_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='5 min', image=self.time_05_image, compound='left', command=self.time_05_click, width=100, relief='ridge')
+        time_10_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='10 min', image=self.time_10_image, compound='left', command=self.time_10_click, width=100, relief='ridge')
+        time_30_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='30 min', image=self.time_30_image, compound='left', command=self.time_30_click, width=100, relief='ridge')
 
-        button_wrapper.grid(row=2)
-        hour_button.grid(row=0, column=0)
-        day_button.grid(row=0, column=1)
-        week_button.grid(row=0, column=2)
+        button_wrapper.pack()
+        time_05_button.pack(side='left')
+        time_10_button.pack(side='left')
+        time_30_button.pack(side='left')
 
         self.control_buttons = ControlButtons(self.footer, control_unit)
-        self.control_buttons.grid()
+        self.control_buttons.pack()
 
         self.control_unit.data_added_event.add_listener(
             lambda event_data: self.line_graph.add_value(event_data['datetime'], event_data['value'])
         )
 
-    def hour_button_click(self):
+    def time_05_click(self):
         self.line_graph.limit = int(3600 / 40)
 
-    def day_button_click(self):
+    def time_10_click(self):
         self.line_graph.limit = int(86400 / 40)
 
-    def week_button_click(self):
+    def time_30_click(self):
         self.line_graph.limit = int(604800 / 40)

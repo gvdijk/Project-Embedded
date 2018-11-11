@@ -11,18 +11,18 @@ class Menu(tk.Frame):
             return
 
         # create all of the main containers
-        self.top_frame = tk.Frame(root, bg='cyan', width=450, height=50, pady=3)
-        self.center = tk.Frame(root, bg='red', width=450, height=450, pady=3)
-        self.footer = tk.Frame(root, bg='pink', width=450, height=50, pady=3)
+        self.top_frame = tk.Frame(root, bg='#3D4C53', width=450, height=50, pady=3)
+        self.center = tk.Frame(root, bg='#EEEEEE', width=450, height=450, pady=3)
+        self.footer = tk.Frame(root, bg='#E6772E', width=450, height=50, pady=3)
 
         # layout all of the main containers
-        root.grid_rowconfigure(1, weight=1)
-        root.grid_columnconfigure(0, weight=1)
+        # root.grid_rowconfigure(1, weight=1)
+        # root.grid_columnconfigure(0, weight=1)
 
-        self.top_frame.grid(row=0, sticky="ew")
-        self.center.grid(row=1, sticky="nsew")
-        self.footer.grid(row=3, sticky="ew")
+        self.top_frame.pack(fill='x', expand=False)
+        self.center.pack(fill='both', expand=True)
+        self.footer.pack(fill='x', expand=False, anchor='s')
 
         # create the self.self.center widgets
-        self.center.grid_rowconfigure(0, weight=1)
-        self.center.grid_columnconfigure(1, weight=1)
+        # self.center.grid_rowconfigure(0, weight=1)
+        # self.center.grid_columnconfigure(1, weight=1)
