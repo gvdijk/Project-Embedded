@@ -28,7 +28,7 @@ class ControlUnitSelect(tk.Frame):
         Event.events['control_unit_removed'].add_listener(
             lambda data: self.remove_option(data['control_unit'])
         )
-
+        
     def on_list_box_select(self, event):
         if event.widget.winfo_class() == 'Frame':
             MenuStack.next(ControlUnitMenu(MenuStack.root, event.widget.control_unit))

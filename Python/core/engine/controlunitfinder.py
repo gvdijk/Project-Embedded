@@ -37,5 +37,6 @@ class ControlUnitFinder:
                 thread = Thread(target=check_type).start()
 
     def on_connection_lost(self, event_data):
-        connector = event_data['connector']
-        print(connector)
+        unit = event_data['control_unit']
+        if unit.port in self.control_units:
+            self.control_units.pop(unit.port)

@@ -15,7 +15,7 @@ class LineGraph(tk.Frame):
 
         self.figure = Figure(figsize=(6, 6), dpi=100)
         self.plot = self.figure.add_subplot(1, 1, 1)
-
+        self.plot.autoscale(enable=False)
         self.canvas = FigureCanvasTkAgg(self.figure, master=self)
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 

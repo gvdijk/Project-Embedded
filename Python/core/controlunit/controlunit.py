@@ -57,7 +57,8 @@ class ControlUnit:
 
     def send_instruction(self, instruction: Instruction):
         if not self.__still_connected():
-            return 0
+            self.connection_lost_event.call(control_unit=self)
+            return b'\x00'
 
         if not self.ser.isOpen():
             self.ser.open()
@@ -85,7 +86,8 @@ class ControlUnit:
 
     def send_instruction_and_value(self, instruction: Instruction, value):
         if not self.__still_connected():
-            return 0
+            self.connection_lost_event.call(unit=self)
+            return b'\x00'
 
         self.ser.write(instruction.command)
         time.sleep(.010)

@@ -27,7 +27,10 @@ class Engine:
         self.on_control_unit_removed = Engine.ControlUnitRemovedEvent()
 
     def on_control_unit_found(self, event_data):
-        control_unit = event_data['control_unit']
+        control_unit: ControlUnit = event_data['control_unit']
+        control_unit.connection_lost_event.add_listener(
+            lambda event_data: self.remove_control_unit(event_data['control_unit'])
+        )
         self.add_control_unit(control_unit)
 
     def add_control_unit(self, control_unit: ControlUnit):
