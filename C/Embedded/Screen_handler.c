@@ -32,13 +32,11 @@ void handle_sensors(void) {
 		uint16_t lightvalue = get_ADCValue();
 		if(lightvalue < (sensor_trigger + sensor_margin)){
 			if (screen_state == extended || screen_state == floating) {
-				set_servoTarget(4800);
 				screen_roll_in();
 			}
 		}
 		else if(lightvalue > (sensor_trigger - sensor_margin)){
 			if (screen_state == retracted || screen_state == floating) {
-				set_servoTarget(3000);
 				screen_roll_out();
 			}
 		}
@@ -70,6 +68,7 @@ void screen_roll_in(void) {
 				led_counter = 0;
 			}
 			led_counter += 1;
+			set_servoTarget(4800);
 			SCH_Add_Task(servo_rollIn, 0, 0);
 			SCH_Add_Task(screen_roll_in, 10, 0);
 		} else {
@@ -95,6 +94,7 @@ void screen_roll_out(void) {
 				led_counter = 0;
 			}
 			led_counter += 1;
+			set_servoTarget(3000);
 			SCH_Add_Task(servo_rollOut, 0, 0);
 			SCH_Add_Task(screen_roll_out, 10, 0);
 		} else {
