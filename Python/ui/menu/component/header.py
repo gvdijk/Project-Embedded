@@ -28,7 +28,8 @@ class Header(tk.Frame):
         self.name_label = tk.Label(self, text=text, foreground='#EEEEEE', bg='#3D4C53', font='Verdana 16')
 
         self.time_text = tk.StringVar()
-        self.time_label = tk.Label(self, textvariable=self.time_text, foreground='#EEEEEE', bg='#3D4C53', width=6, font='Serif 12 bold')
+        self.time_image = tk.PhotoImage(file='ui/time_white.png')
+        self.time_label = tk.Label(self, textvariable=self.time_text, foreground='#EEEEEE', bg='#3D4C53', image=self.time_image, compound='left', width=70, font='Serif 12 bold')
 
         self.name_label.pack(side='left', fill='x', expand=True)
         self.time_label.pack(side='left', expand=None)
