@@ -12,27 +12,28 @@ class ControlUnitMenu(Menu):
         super().__init__(parent, 'Control unit menu')
         self.control_unit = control_unit
 
-        self.time_05_image =tk.PhotoImage(file='ui/time_5_white.png')
-        self.time_10_image =tk.PhotoImage(file='ui/time_10_white.png')
-        self.time_30_image =tk.PhotoImage(file='ui/time_30_white.png')
+        self.time_05_image = tk.PhotoImage(file='ui/time_5_white.png')
+        self.time_10_image = tk.PhotoImage(file='ui/time_10_white.png')
+        self.time_30_image = tk.PhotoImage(file='ui/time_30_white.png')
 
         header = Header(self.top_frame, text='Control unit menu')
         header.pack(fill='x')
 
-        x_data = []
-        y_data = []
-        for i in control_unit.recorded_data:
-            x_data.append(i)
-            y_data.append(control_unit.recorded_data[i])
-
-        self.line_graph = LineGraph(self.center, x_data=x_data, y_data=y_data)
+        self.line_graph = LineGraph(self.center)
         self.line_graph.pack(fill='both', expand=True)
-        self.line_graph.limit = 100
+
+        self.time_range_set(5)
 
         button_wrapper = tk.Frame(self.center)
-        time_05_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='5 min', image=self.time_05_image, compound='left', command=self.time_05_click, width=100, relief='ridge')
-        time_10_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='10 min', image=self.time_10_image, compound='left', command=self.time_10_click, width=100, relief='ridge')
-        time_30_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='30 min', image=self.time_30_image, compound='left', command=self.time_30_click, width=100, relief='ridge')
+        time_05_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='5 min',
+                                   image=self.time_05_image, compound='left', command=self.time_05_click, width=100,
+                                   relief='ridge')
+        time_10_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='10 min',
+                                   image=self.time_10_image, compound='left', command=self.time_10_click, width=100,
+                                   relief='ridge')
+        time_30_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='30 min',
+                                   image=self.time_30_image, compound='left', command=self.time_30_click, width=100,
+                                   relief='ridge')
 
         button_wrapper.pack()
         time_05_button.pack(side='left')
@@ -53,13 +54,20 @@ class ControlUnitMenu(Menu):
         elif self.control_unit.type == ControlUnit.Type.TEMPERATURE:
             self.line_graph.add_value(date_time, value)
 
-
-
     def time_05_click(self):
-        self.line_graph.limit = int(3600 / 40)
+        self.time_range_set(5)
 
     def time_10_click(self):
-        self.line_graph.limit = int(86400 / 40)
+        self.time_range_set(10)
 
     def time_30_click(self):
-        self.line_graph.limit = int(604800 / 40)
+        self.time_range_set(30)
+
+    def time_range_set(self, minutes):
+        x_data = []
+        y_data = []
+        for i in self.control_unit.recorded_data:
+            x_data.append(i)
+            y_data.append(self.control_unit.recorded_data[i])
+
+        self.line_graph.set_time_range(minutes, _x=x_data, _y=y_data)

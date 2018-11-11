@@ -34,6 +34,7 @@ class MenuStack:
         if len(MenuStack.instance.stack) > 0:
             prev = MenuStack.instance.stack.pop()
             prev.close()
+            prev.on_delete()
             prev.pack_forget()
             prev.destroy()
 

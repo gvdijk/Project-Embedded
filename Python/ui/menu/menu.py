@@ -40,3 +40,6 @@ class Menu(tk.Frame):
         self.top_frame.pack_forget()
         self.center.pack_forget()
         self.footer.pack_forget()
+
+    def on_delete(self):
+        pass
