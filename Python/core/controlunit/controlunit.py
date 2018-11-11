@@ -16,6 +16,9 @@ class ControlUnit:
     class DataAddedEvent(Event):
         pass
 
+    class RolledPercentageChanged(Event):
+        pass
+
     class Type(Enum):
         LIGHT = 1
         TEMPERATURE = 2
@@ -34,6 +37,7 @@ class ControlUnit:
 
         self.connection_lost_event = ControlUnit.ConnectionLostEvent()
         self.data_added_event = ControlUnit.DataAddedEvent()
+        self.rolled_percentage_changed_event = ControlUnit.RolledPercentageChanged()
 
         self.type = unit_type
         self.id = id
@@ -75,7 +79,9 @@ class ControlUnit:
         max = self.get_max_distance()
         current = self.get_distance()
 
-        self.rolled_percentage = (current / (max - min)) * 100
+        self.rolled_percentage = round((current / (max - min)) * 100, 2)
+
+        self.rolled_percentage_changed_event.call(percentage=self.rolled_percentage)
 
     def send_instruction_and_value(self, instruction: Instruction, value):
         if not self.__still_connected():

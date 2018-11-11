@@ -2,6 +2,7 @@ from Python.core.controlunit.controlunit import ControlUnit
 from Python.ui.datavisualisation.graphs.linegraph import LineGraph
 from Python.ui.menu.component.header import Header
 from Python.ui.menu.controlunit.components.controlbuttons import ControlButtons
+from Python.ui.menu.controlunit.components.infobar import InfoBar
 from Python.ui.menu.menu import *
 
 
@@ -24,8 +25,10 @@ class ControlUnitMenu(Menu):
 
         self.time_range_set(5)
 
-        button_wrapper = tk.Frame(self.center)
+        info_bar = InfoBar(self.top_frame, control_unit)
+        info_bar.pack(fill='x')
 
+        button_wrapper = tk.Frame(self.center)
 
 
         time_05_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='5 min',
@@ -52,6 +55,10 @@ class ControlUnitMenu(Menu):
 
     def add_data(self, date_time, value):
         self.line_graph.add_value(date_time, value)
+
+    def on_delete(self):
+        print('hi')
+        pass
 
     def time_05_click(self):
         self.time_range_set(5)
