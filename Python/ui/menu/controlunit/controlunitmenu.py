@@ -19,6 +19,9 @@ class ControlUnitMenu(Menu):
         self.line_graph.grid(row=1, sticky="new")
         self.line_graph.limit = 100
 
+        for i in control_unit.recorded_data:
+            self.line_graph.add_value(i)
+
         button_wrapper = tk.Frame(self.center)
         hour_button = tk.Button(button_wrapper, text='Last Hour', command=self.hour_button_click)
         day_button = tk.Button(button_wrapper, text='Last Day', command=self.day_button_click)
