@@ -29,6 +29,7 @@ class MenuStack:
         if len(MenuStack.instance.stack) > 1:
             menu = MenuStack.instance.stack.pop()
             print(menu)
+            menu.pack_forget()
             menu.destroy()
 
         return MenuStack.instance.stack[-1]

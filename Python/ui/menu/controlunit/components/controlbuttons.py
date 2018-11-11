@@ -10,9 +10,9 @@ class ControlButtons(tk.Frame):
         super().__init__(parent)
 
         self.collapse_image = tk.PhotoImage(file='ui/collapse_white.png')
-        self.retract_image =tk.PhotoImage(file='ui/retract_white.png')
-        self.toggle_off =tk.PhotoImage(file='ui/toggle_off_white.png')
-        self.toggle_on =tk.PhotoImage(file='ui/toggle_on_white.png')
+        self.retract_image = tk.PhotoImage(file='ui/retract_white.png')
+        self.toggle_off = tk.PhotoImage(file='ui/toggle_off_white.png')
+        self.toggle_on = tk.PhotoImage(file='ui/toggle_on_white.png')
 
         self.control_unit = control_unit
 

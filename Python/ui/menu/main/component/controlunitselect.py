@@ -14,8 +14,9 @@ class ControlUnitSelect(tk.Frame):
 
         list_box = tk.Listbox(self, width=50, height=4, font=("Helvetica", 12))
         list_box.bind('<<ListboxSelect>>', self.on_list_box_select)
+
         self.list_box = list_box
-        self.list_box.pack()
+        self.list_box.pack(fill='x', expand=False)
 
         self.control_units = []
 
@@ -34,6 +35,7 @@ class ControlUnitSelect(tk.Frame):
     def add_option(self, control_unit: ControlUnit):
         self.control_units.append(control_unit)
         self.list_box.insert(tk.END, control_unit.type.__str__())
+
 
     def remove_option(self, control_unit: ControlUnit):
         index = self.control_units.index(control_unit)

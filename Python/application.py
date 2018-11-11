@@ -23,5 +23,5 @@ class Application(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    Application(root).pack(fill='both', expand=True)
+    Application(root).pack(fill='both')
     root.mainloop()

@@ -19,7 +19,7 @@ class Menu(tk.Frame):
         # root.grid_rowconfigure(1, weight=1)
         # root.grid_columnconfigure(0, weight=1)
 
-        self.top_frame.pack(fill='x', expand=False)
+        self.top_frame.pack(fill='x', expand=False, anchor='n')
         self.center.pack(fill='both', expand=True)
         self.footer.pack(fill='x', expand=False, anchor='s')
 

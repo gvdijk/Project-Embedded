@@ -12,9 +12,9 @@ class ControlUnitMenu(Menu):
         super().__init__(parent, 'Control unit menu')
         self.control_unit = control_unit
 
-        self.time_05_image =tk.PhotoImage(file='ui/time_5_white.png')
-        self.time_10_image =tk.PhotoImage(file='ui/time_10_white.png')
-        self.time_30_image =tk.PhotoImage(file='ui/time_30_white.png')
+        self.time_05_image = tk.PhotoImage(file='ui/time_5_white.png')
+        self.time_10_image = tk.PhotoImage(file='ui/time_10_white.png')
+        self.time_30_image = tk.PhotoImage(file='ui/time_30_white.png')
 
         header = Header(self.top_frame, text='Control unit menu')
         header.pack(fill='x')

@@ -22,7 +22,7 @@ class Header(tk.Frame):
         else:
             self.back_button = tk.Label(self, text='menu', image=self.home_image, bg='#3D4C53', width=60)
 
-        self.back_button.pack(side='left', expand=None)
+        self.back_button.pack(side='left', expand=False)
 
 
         self.name_label = tk.Label(self, text=text, foreground='#EEEEEE', bg='#3D4C53', font='Verdana 16')
@@ -31,7 +31,7 @@ class Header(tk.Frame):
         self.time_label = tk.Label(self, textvariable=self.time_text, foreground='#EEEEEE', bg='#3D4C53', width=6, font='Serif 12 bold')
 
         self.name_label.pack(side='left', fill='x', expand=True)
-        self.time_label.pack(side='left', expand=None)
+        self.time_label.pack(side='left', expand=False)
 
         self.update_time_loop()
 

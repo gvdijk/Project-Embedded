@@ -10,7 +10,7 @@ class MainMenu(Menu):
         super().__init__(parent, 'Main menu')
 
         header = Header(self.top_frame, text='Main menu')
-        header.pack(fill='x')
+        header.pack(fill='x', expand=False)
 
         self.control_unit_select = ControlUnitSelect(self.center)
-        self.control_unit_select.pack()
+        self.control_unit_select.pack(fill='both', expand=True)
