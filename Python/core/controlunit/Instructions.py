@@ -4,7 +4,7 @@ class Instruction:
         self.bytes = bytes
 
 
-READ_SENSOR_TYPE = Instruction(b'\x81', 2)
+READ_SENSOR_TYPE = Instruction(b'\x81', 1)
 READ_SENSOR_DATA = Instruction(b'\x82', 2)
 READ_SENSOR_THRESHOLD = Instruction(b'\x83', 2)
 READ_DISTANCE = Instruction(b'\x91', 1)

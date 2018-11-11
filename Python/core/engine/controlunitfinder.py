@@ -25,8 +25,9 @@ class ControlUnitFinder:
 
             def check_type():
                 control_unit = ControlUnit(port.device)
-                time.sleep(2)
+                time.sleep(4)
                 control_unit.type = control_unit.get_sensor_type()
+                print(control_unit.type)
 
                 if control_unit.type is not ControlUnit.Type.UNIDENTIFIED:
                     control_unit.connection_lost_event.add_listener(self.on_connection_lost)

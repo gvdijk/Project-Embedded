@@ -56,9 +56,6 @@ class Engine:
                 for control_unit in self.__control_units:
 
                     if control_unit.type == ControlUnit.Type.LIGHT:
-                        control_unit.add_data(control_unit.get_light_percentage())
-
-                    if control_unit.type == ControlUnit.Type.TEMPERATURE:
                         control_unit.add_data(control_unit.get_temperature())
 
             time.sleep(1)

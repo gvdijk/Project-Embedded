@@ -16,12 +16,9 @@ class ControlUnit:
     class DataAddedEvent(Event):
         pass
 
-    class RolledPercentageChanged(Event):
-        pass
-
     class Type(Enum):
-        LIGHT = 1
-        TEMPERATURE = 2
+        LIGHT = 2
+        TEMPERATURE = 1
         UNIDENTIFIED = 10
 
     def __init__(self, port, unit_type: Type = Type.UNIDENTIFIED):
@@ -37,7 +34,6 @@ class ControlUnit:
 
         self.connection_lost_event = ControlUnit.ConnectionLostEvent()
         self.data_added_event = ControlUnit.DataAddedEvent()
-        self.rolled_percentage_changed_event = ControlUnit.RolledPercentageChanged()
 
         self.type = unit_type
         self.id = id
@@ -79,9 +75,7 @@ class ControlUnit:
         max = self.get_max_distance()
         current = self.get_distance()
 
-        self.rolled_percentage = round((current / (max - min)) * 100, 2)
-
-        self.rolled_percentage_changed_event.call(percentage=self.rolled_percentage)
+        self.rolled_percentage = (current / (max - min)) * 100
 
     def send_instruction_and_value(self, instruction: Instruction, value):
         if not self.__still_connected():
@@ -102,8 +96,8 @@ class ControlUnit:
         response = self.send_instruction(READ_SENSOR_TYPE)
 
         switcher = {
-            97: ControlUnit.Type.LIGHT,
-            98: ControlUnit.Type.TEMPERATURE,
+            97: ControlUnit.Type.TEMPERATURE,
+            98: ControlUnit.Type.LIGHT,
         }
 
         return switcher.get(int(response.hex(), 16), ControlUnit.Type.UNIDENTIFIED)
@@ -123,9 +117,6 @@ class ControlUnit:
 
     def get_temperature(self):
         return ((self.get_sensor_data() * 4.8828125) - 500) / 10
-
-    def get_light_percentage(self):
-        return (self.get_sensor_data() / 1023) * 100
 
     def get_sensor_thresh_hold(self):
         response = self.send_instruction(READ_SENSOR_THRESHOLD)
