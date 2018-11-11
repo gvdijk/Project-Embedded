@@ -118,6 +118,9 @@ class ControlUnit:
     def get_temperature(self):
         return ((self.get_sensor_data() * 4.8828125) - 500) / 10
 
+    def get_light_percentage(self):
+        return (self.get_sensor_data() / 1023) * 100
+
     def get_sensor_thresh_hold(self):
         response = self.send_instruction(READ_SENSOR_THRESHOLD)
         return int(response.hex(), 16)
