@@ -48,7 +48,7 @@ class ControlUnitMenu(Menu):
 
     def add_data(self, date_time, value):
         if self.control_unit.type == ControlUnit.Type.LIGHT:
-            perc = (value / 1023) * 100
+            perc = round((value / 1023) * 100, 2)
             self.line_graph.add_value(date_time, perc)
         elif self.control_unit.type == ControlUnit.Type.TEMPERATURE:
             self.line_graph.add_value(date_time, value)
