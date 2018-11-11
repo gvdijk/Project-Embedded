@@ -12,6 +12,9 @@ int servo_position = 3000;
 int servo_target = 4800;
 int servo_speed = 5;
 
+/*
+* Initialiseer de Pulse Width Modulator om de servo aan te sturen
+*/
 void PWM_init(void){
 	DDRB |= 1 << PINB1;										// Zet pin 9 op de arduino naar output
 	TCCR1A |= (1 << WGM11) | (1 << COM1A1);					// Zet Fast PWM mode aan met de TOP op ICR1
@@ -20,10 +23,20 @@ void PWM_init(void){
 	OCR1A = 3000;											// Zet de servo naar de standaard beginpositie
 }
 
+/*
+* Stel de positie in waar de servo heen moet bewegen
+*
+* 1200 = Wijst volledig omhoog
+* 3000 = Wijst vooruit
+* 4800 = Wijst volledig naar beneden
+*/
 void set_servoTarget(int target){
 	servo_target = target;
 }
 
+/*
+* Rol de servo van een ingeklapte naar een uitgeklapte positie
+*/
 void servo_rollOut(void){
 	if (servo_position > servo_target){
 		servo_position -= servo_speed;
@@ -31,6 +44,9 @@ void servo_rollOut(void){
 	}
 }
 
+/*
+* Rol de servo van een uitgeklapte naar een ingeklapte positie
+*/
 void servo_rollIn(void){
 	if (servo_position < servo_target){
 		servo_position += servo_speed;

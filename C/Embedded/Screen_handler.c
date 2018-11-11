@@ -16,9 +16,9 @@ typedef enum { retracted, rolling, extended, floating } state;
 bool screen_stop = false;
 bool auto_sensor = true;
 state screen_state = extended;
-uint16_t sensor_trigger = 300;
-uint16_t sensor_margin = 25;
-uint8_t led_indicator = 0;
+uint16_t sensor_trigger = 740;
+uint16_t sensor_margin = 20;
+uint8_t led_counter = 0;
 
 // Initialiseer de poorten om de lampjes aan te sturen
 void LED_init(void) {
@@ -65,11 +65,11 @@ void screen_roll_in(void) {
 	screen_state = rolling;
 	if (!screen_stop) {
 		if (Ultrasoon_Trigger() > getMinimumDistance()) {
-			if (led_indicator >= 25){
+			if (led_counter >= 25){
 				status_led_toggle();
-				led_indicator = 0;
+				led_counter = 0;
 			}
-			led_indicator += 1;
+			led_counter += 1;
 			SCH_Add_Task(servo_rollIn, 0, 0);
 			SCH_Add_Task(screen_roll_in, 10, 0);
 		} else {
@@ -90,11 +90,11 @@ void screen_roll_out(void) {
 	set_led(true);
 	if (!screen_stop) {
 		if (Ultrasoon_Trigger() < getMaximumDistance()) {
-			if (led_indicator >= 25){
+			if (led_counter >= 25){
 				status_led_toggle();
-				led_indicator = 0;
+				led_counter = 0;
 			}
-			led_indicator += 1;
+			led_counter += 1;
 			SCH_Add_Task(servo_rollOut, 0, 0);
 			SCH_Add_Task(screen_roll_out, 10, 0);
 		} else {
@@ -113,7 +113,7 @@ void status_led_toggle(void) {
 	PORTD ^= (1 << PORTD5);
 }
 
-// Zet het gele lampje aan als het uit is of uit als het aan is
+// Zet het gele lampje uit
 void status_led_off(void) {
 	PORTD &= ~(1 << PORTD5);
 }
