@@ -96,8 +96,8 @@ class ControlUnit:
         response = self.send_instruction(READ_SENSOR_TYPE)
 
         switcher = {
-            97: ControlUnit.Type.TEMPERATURE,
-            98: ControlUnit.Type.LIGHT,
+            97: ControlUnit.Type.LIGHT,
+            98: ControlUnit.Type.TEMPERATURE,
         }
 
         return switcher.get(int(response.hex(), 16), ControlUnit.Type.UNIDENTIFIED)

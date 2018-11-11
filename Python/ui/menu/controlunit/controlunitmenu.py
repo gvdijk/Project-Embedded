@@ -25,6 +25,9 @@ class ControlUnitMenu(Menu):
         self.time_range_set(5)
 
         button_wrapper = tk.Frame(self.center)
+
+
+
         time_05_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='5 min',
                                    image=self.time_05_image, compound='left', command=self.time_05_click, width=100,
                                    relief='ridge')
