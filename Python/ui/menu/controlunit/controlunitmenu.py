@@ -15,12 +15,15 @@ class ControlUnitMenu(Menu):
         header = Header(self.top_frame, text='Control unit menu')
         header.grid(row=0, column=0, sticky="ew")
 
-        self.line_graph = LineGraph(self.center)
+        x_data = []
+        y_data = []
+        for i in control_unit.recorded_data:
+            x_data.append(i)
+            y_data.append(control_unit.recorded_data[i])
+
+        self.line_graph = LineGraph(self.center, x_data=x_data, y_data=y_data)
         self.line_graph.grid(row=1, sticky="new")
         self.line_graph.limit = 100
-
-        for i in control_unit.recorded_data:
-            self.line_graph.add_value(i)
 
         button_wrapper = tk.Frame(self.center)
         hour_button = tk.Button(button_wrapper, text='Last Hour', command=self.hour_button_click)
@@ -36,7 +39,7 @@ class ControlUnitMenu(Menu):
         self.control_buttons.grid()
 
         self.control_unit.data_added_event.add_listener(
-            lambda event_data: self.line_graph.add_value(event_data['value'])
+            lambda event_data: self.line_graph.add_value(event_data['datetime'], event_data['value'])
         )
 
     def hour_button_click(self):

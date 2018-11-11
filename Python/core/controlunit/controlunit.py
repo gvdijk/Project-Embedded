@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import time
 from enum import Enum
 from threading import Thread
@@ -41,11 +42,12 @@ class ControlUnit:
         self.id = id
         self.distance = 0
 
-        self.recorded_data = []
+        self.recorded_data = {}
 
     def add_data(self, value):
-        self.recorded_data.append(value)
-        self.data_added_event.call(value=value)
+        d = datetime.datetime.now()
+        self.recorded_data[d] = value
+        self.data_added_event.call(value=value, datetime=d)
 
     def __still_connected(self):
         return self.port in [p.device for p in serial.tools.list_ports.comports()]
