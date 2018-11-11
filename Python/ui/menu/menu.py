@@ -7,6 +7,8 @@ class Menu(tk.Frame):
         print('Initializing class Menu')
         super().__init__(root)
 
+        self.base_layout = base_layout
+
         if not base_layout:
             return
 
@@ -19,10 +21,22 @@ class Menu(tk.Frame):
         # root.grid_rowconfigure(1, weight=1)
         # root.grid_columnconfigure(0, weight=1)
 
+        # create the self.self.center widgets
+        # self.center.grid_rowconfigure(0, weight=1)
+        # self.center.grid_columnconfigure(1, weight=1)
+
+    def open(self):
+        if not self.base_layout:
+            return
+
         self.top_frame.pack(fill='x', expand=False)
         self.center.pack(fill='both', expand=True)
         self.footer.pack(fill='x', expand=False, anchor='s')
 
-        # create the self.self.center widgets
-        # self.center.grid_rowconfigure(0, weight=1)
-        # self.center.grid_columnconfigure(1, weight=1)
+    def close(self):
+        if not self.base_layout:
+            return
+
+        self.top_frame.pack_forget()
+        self.center.pack_forget()
+        self.footer.pack_forget()

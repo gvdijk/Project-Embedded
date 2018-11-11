@@ -21,19 +21,24 @@ class MenuStack:
     @staticmethod
     def next(menu: Menu):
         if len(MenuStack.instance.stack) > 0:
-            MenuStack.instance.stack[-1].pack_forget()
+            prev: Menu = MenuStack.instance.stack[-1]
+            prev.close()
+            prev.pack_forget()
 
         MenuStack.instance.stack.append(menu)
         menu.pack(expand=False)
-        return menu
+        menu.open()
 
     @staticmethod
     def back():
         if len(MenuStack.instance.stack) > 0:
-            menu = MenuStack.instance.stack.pop()
-            menu.destroy()
+            prev = MenuStack.instance.stack.pop()
+            prev.close()
+            prev.pack_forget()
+            prev.destroy()
 
-        return MenuStack.instance.stack[-1]
+        new = MenuStack.instance.stack[-1]
+        new.open()
 
     @staticmethod
     def can_back() -> bool:

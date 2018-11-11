@@ -47,7 +47,7 @@ class Engine:
         counter = 0
         while self.running:
             for control_unit in self.__control_units:
-                control_unit.distance = control_unit.get_distance()
+                control_unit.update_rolled_percentage()
 
             if counter % 10 == 0:
                 self.control_unit_finder.poll()

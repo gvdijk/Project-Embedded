@@ -1,14 +1,11 @@
-import asyncio
 import datetime
 import time
 from enum import Enum
-from threading import Thread
 
 import serial
 import serial.tools.list_ports
 
 from Python.core.controlunit.Instructions import *
-from Python.core.controlunit.connection import Connector
 from Python.event.event import Event
 
 
@@ -42,6 +39,8 @@ class ControlUnit:
         self.id = id
         self.distance = 0
 
+        self.rolled_percentage = 0
+
         self.recorded_data = {}
 
     def add_data(self, value):
@@ -70,6 +69,13 @@ class ControlUnit:
                 return result
         else:
             return b'\x00'
+
+    def update_rolled_percentage(self):
+        min = self.get_min_distance()
+        max = self.get_max_distance()
+        current = self.get_distance()
+
+        self.rolled_percentage = (current / (max - min)) * 100
 
     def send_instruction_and_value(self, instruction: Instruction, value):
         if not self.__still_connected():
@@ -110,7 +116,7 @@ class ControlUnit:
         return value
 
     def get_temperature(self):
-        return ((self.get_sensor_data() * 4.8828125) - 500)/10
+        return ((self.get_sensor_data() * 4.8828125) - 500) / 10
 
     def get_sensor_thresh_hold(self):
         response = self.send_instruction(READ_SENSOR_THRESHOLD)

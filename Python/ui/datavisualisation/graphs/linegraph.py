@@ -8,7 +8,7 @@ import matplotlib.dates as mdates
 
 class LineGraph(tk.Frame):
 
-    def __init__(self, parent, x_data=[], y_data=[]):
+    def __init__(self, parent, x_data=[], y_data=[], y_label='', x_label=''):
         super().__init__(parent)
 
         self.x_data = x_data
