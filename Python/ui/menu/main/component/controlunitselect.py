@@ -1,3 +1,4 @@
+import math
 import tkinter as tk
 
 from Python.core.controlunit.controlunit import ControlUnit
@@ -59,7 +60,8 @@ class ControlUnitSelect(tk.Frame):
             self.distance_texts[unit] = tk.StringVar()
 
             def update_distance_text(percentage, unit):
-                self.distance_texts[unit].set('{}%'.format(percentage))
+                val = (round(percentage / 10)) * 10
+                self.distance_texts[unit].set('{}%'.format(val))
 
             unit.rolled_percentage_changed_event.add_listener(
                 lambda event_data: update_distance_text(event_data['percentage'], unit)
