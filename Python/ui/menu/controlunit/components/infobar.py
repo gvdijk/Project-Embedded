@@ -1,3 +1,4 @@
+import math
 import tkinter as tk
 
 from Python.core.controlunit.controlunit import ControlUnit
@@ -25,4 +26,5 @@ class InfoBar(tk.Frame):
         self.rolled_perc_text.set(self.get_text())
 
     def get_text(self) -> str:
-        return 'Rolled: {}%'.format(self.control_unit.rolled_percentage)
+        val = (round(self.control_unit.rolled_percentage / 10)) * 10
+        return 'Rolled: {}%'.format(val)

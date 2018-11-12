@@ -36,7 +36,7 @@ class LineGraph(tk.Frame):
         self.after(1000, self.draw_loop)
         self.draw()
 
-    def set_time_range(self, minutes: int, _x=[], _y=[], interval=10):
+    def set_time_range(self, minutes: int, _x=[], _y=[]):
         self.time_range = minutes
 
         x = []
@@ -46,12 +46,17 @@ class LineGraph(tk.Frame):
         past = now - datetime.timedelta(minutes=minutes)
 
         x.append(past)
-        y.append(0)
 
         for index, date in enumerate(_x):
             if date > past:
+                if len(y) == 0:
+                    y.append(_y[index])
+
                 x.append(date)
                 y.append(_y[index])
+
+        if len(y) == 0:
+            y.append(0)
 
         x.append(now)
         y.append(y[-1])
