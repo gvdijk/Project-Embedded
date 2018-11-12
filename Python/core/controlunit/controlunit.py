@@ -120,7 +120,7 @@ class ControlUnit:
         return value
 
     def get_temperature(self):
-        return ((self.get_sensor_data() * 4.8828125) - 500) / 10
+        return (self.get_sensor_data() * 4.8828125) / 10
 
     def get_light_percentage(self):
         return (self.get_sensor_data() / 1023) * 100

@@ -3,6 +3,7 @@ from Python.ui.datavisualisation.graphs.linegraph import LineGraph
 from Python.ui.menu.MenuStack import MenuStack
 from Python.ui.menu.component.header import Header
 from Python.ui.menu.controlunit.components.controlbuttons import ControlButtons
+from Python.ui.menu.controlunit.components.settingspanel import Settingspanel
 from Python.ui.menu.controlunit.components.infobar import InfoBar
 from Python.ui.menu.menu import *
 
@@ -49,6 +50,9 @@ class ControlUnitMenu(Menu):
 
         self.control_buttons = ControlButtons(self.footer, control_unit)
         self.control_buttons.pack()
+
+        self.setting_buttons = Settingspanel(self.footer, control_unit)
+        self.setting_buttons.pack()
 
         self.control_unit.disconnect_event.add_listener(
             lambda event_data: MenuStack.back()
