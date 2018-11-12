@@ -58,6 +58,7 @@ class Engine:
                 if not control_unit.still_connected():
                     self.remove_control_unit(control_unit)
                     self.control_unit_finder.remove_control_unit(control_unit)
+                    control_unit.disconnect()
                     continue
 
                 if counter % 1 == 0:

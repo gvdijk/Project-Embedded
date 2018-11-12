@@ -15,7 +15,8 @@ class ControlUnitSelect(tk.Frame):
         self.pack(fill='both', expand=True)
         self.unit_box = tk.Frame(self, bg='#4DB3B3', padx=10, pady=10, width=500, height=300)
         self.unit_box.pack(fill='both', expand=True)
-        self.title_label = tk.Label(self.unit_box, padx=10, pady=10, text='Aangesloten Eenheden', foreground='#EEEEEE', bg='#4DB3B3', font='Serif 10 bold')
+        self.title_label = tk.Label(self.unit_box, padx=10, pady=10, text='Aangesloten Eenheden', foreground='#EEEEEE',
+                                    bg='#4DB3B3', font='Serif 10 bold')
         self.title_label.pack()
 
         self.control_units = []
@@ -28,7 +29,7 @@ class ControlUnitSelect(tk.Frame):
         Event.events['control_unit_removed'].add_listener(
             lambda data: self.remove_option(data['control_unit'])
         )
-        
+
     def on_list_box_select(self, event):
         if event.widget.winfo_class() == 'Frame':
             MenuStack.next(ControlUnitMenu(MenuStack.root, event.widget.control_unit))
@@ -40,7 +41,8 @@ class ControlUnitSelect(tk.Frame):
             frame.pack_forget()
         self.unit_frames = []
         for unit in self.control_units:
-            unit_frame = tk.Frame(self.unit_box, borderwidth=1, relief="solid", bg='#3D4C53', width=300, height=180, cursor='crosshair')
+            unit_frame = tk.Frame(self.unit_box, borderwidth=1, relief="solid", bg='#3D4C53', width=300, height=180,
+                                  cursor='crosshair')
             unit_frame.pack(fill='x')
 
             unit_frame.control_unit = unit
@@ -50,10 +52,19 @@ class ControlUnitSelect(tk.Frame):
             elif unit.type.__str__() == 'Type.LIGHT':
                 name = "Lichtsintensiteit Eenheid"
 
+            self.distance_text = tk.StringVar()
+
+            unit.rolled_percentage_changed_event.add_listener(
+                lambda event_data: self.update_distance_text(event_data['percentage'])
+            )
+
             unit_frame.unit_image = tk.PhotoImage(file='ui/arduino.png')
-            unit_frame.image_label = tk.Label(unit_frame, width=100, image=unit_frame.unit_image, bg='#3D4C53', padx=25, pady=15, cursor='crosshair')
-            unit_frame.type_label = tk.Label(unit_frame, width=20, text=name, foreground='#EEEEEE', bg='#3D4C53', font='Serif 12 bold', cursor='crosshair')
-            unit_frame.status_label = tk.Label(unit_frame, width=20, text='0%', foreground='#EEEEEE', bg='#3D4C53', font='Serif 12 bold', cursor='crosshair')
+            unit_frame.image_label = tk.Label(unit_frame, width=100, image=unit_frame.unit_image, bg='#3D4C53', padx=25,
+                                              pady=15, cursor='crosshair')
+            unit_frame.type_label = tk.Label(unit_frame, width=20, text=name, foreground='#EEEEEE', bg='#3D4C53',
+                                             font='Serif 12 bold', cursor='crosshair')
+            unit_frame.status_label = tk.Label(unit_frame, width=20, textvariable=self.distance_text, foreground='#EEEEEE',
+                                               bg='#3D4C53', font='Serif 12 bold', cursor='crosshair')
             unit_frame.image_label.pack(side='left')
             unit_frame.type_label.pack(side='left')
             unit_frame.status_label.pack(side='left')
@@ -65,6 +76,9 @@ class ControlUnitSelect(tk.Frame):
             self.bind_class('tagger', '<Button-1>', self.on_list_box_select)
 
             self.unit_frames.append(unit_frame)
+
+    def update_distance_text(self, percentage):
+        self.distance_text.set('{}%'.format(percentage))
 
     def add_option(self, control_unit: ControlUnit):
         self.control_units.append(control_unit)

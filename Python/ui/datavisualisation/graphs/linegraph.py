@@ -15,7 +15,7 @@ class LineGraph(tk.Frame):
 
         self.figure = Figure(figsize=(6, 6), dpi=100)
         self.plot = self.figure.add_subplot(1, 1, 1)
-        self.plot.autoscale(enable=False)
+
         self.canvas = FigureCanvasTkAgg(self.figure, master=self)
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
@@ -46,7 +46,7 @@ class LineGraph(tk.Frame):
         past = now - datetime.timedelta(minutes=minutes)
 
         x.append(past)
-        y.append(None)
+        y.append(0)
 
         for index, date in enumerate(_x):
             if date > past:
@@ -60,7 +60,9 @@ class LineGraph(tk.Frame):
         self.y = y
 
     def draw(self):
-
+        # print(self.x)
+        # print(self.y)
+        # return
         self.plot.clear()
         self.plot.plot_date(self.x, self.y, 'r')
         self.figure.autofmt_xdate()

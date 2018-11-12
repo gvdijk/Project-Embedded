@@ -1,5 +1,6 @@
 from Python.core.controlunit.controlunit import ControlUnit
 from Python.ui.datavisualisation.graphs.linegraph import LineGraph
+from Python.ui.menu.MenuStack import MenuStack
 from Python.ui.menu.component.header import Header
 from Python.ui.menu.controlunit.components.controlbuttons import ControlButtons
 from Python.ui.menu.controlunit.components.infobar import InfoBar
@@ -48,6 +49,10 @@ class ControlUnitMenu(Menu):
 
         self.control_buttons = ControlButtons(self.footer, control_unit)
         self.control_buttons.pack()
+
+        self.control_unit.disconnect_event.add_listener(
+            lambda event_data: MenuStack.back()
+        )
 
         self.control_unit.data_added_event.add_listener(
             lambda event_data: self.add_data(event_data['datetime'], event_data['value'])

@@ -19,6 +19,7 @@ class ControlUnit:
     class RolledPercentageChanged(Event):
         pass
 
+
     class Type(Enum):
         TEMPERATURE = 1
         LIGHT = 2
@@ -38,6 +39,7 @@ class ControlUnit:
         self.connection_lost_event = ControlUnit.ConnectionLostEvent()
         self.data_added_event = ControlUnit.DataAddedEvent()
         self.rolled_percentage_changed_event = ControlUnit.RolledPercentageChanged()
+        self.disconnect_event = Event()
 
         self.type = unit_type
         self.id = id
@@ -46,6 +48,9 @@ class ControlUnit:
         self.rolled_percentage = 0
 
         self.recorded_data = {}
+
+    def disconnect(self):
+        self.disconnect_event.call()
 
     def add_data(self, value):
         d = datetime.datetime.now()
