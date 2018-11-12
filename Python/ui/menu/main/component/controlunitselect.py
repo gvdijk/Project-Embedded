@@ -52,10 +52,13 @@ class ControlUnitSelect(tk.Frame):
             elif unit.type.__str__() == 'Type.LIGHT':
                 name = "Lichtsintensiteit Eenheid"
 
-            self.distance_text = tk.StringVar()
+            distance_text = tk.StringVar()
+
+            def update_distance_text(percentage, distance_text):
+                distance_text.set('{}%'.format(percentage))
 
             unit.rolled_percentage_changed_event.add_listener(
-                lambda event_data: self.update_distance_text(event_data['percentage'])
+                lambda event_data: update_distance_text(event_data['percentage'], distance_text)
             )
 
             unit_frame.unit_image = tk.PhotoImage(file='ui/arduino.png')
@@ -63,7 +66,7 @@ class ControlUnitSelect(tk.Frame):
                                               pady=15, cursor='crosshair')
             unit_frame.type_label = tk.Label(unit_frame, width=20, text=name, foreground='#EEEEEE', bg='#3D4C53',
                                              font='Serif 12 bold', cursor='crosshair')
-            unit_frame.status_label = tk.Label(unit_frame, width=20, textvariable=self.distance_text, foreground='#EEEEEE',
+            unit_frame.status_label = tk.Label(unit_frame, width=20, textvariable=distance_text, foreground='#EEEEEE',
                                                bg='#3D4C53', font='Serif 12 bold', cursor='crosshair')
             unit_frame.image_label.pack(side='left')
             unit_frame.type_label.pack(side='left')
@@ -76,9 +79,6 @@ class ControlUnitSelect(tk.Frame):
             self.bind_class('tagger', '<Button-1>', self.on_list_box_select)
 
             self.unit_frames.append(unit_frame)
-
-    def update_distance_text(self, percentage):
-        self.distance_text.set('{}%'.format(percentage))
 
     def add_option(self, control_unit: ControlUnit):
         self.control_units.append(control_unit)
