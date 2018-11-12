@@ -21,7 +21,9 @@ class ControlUnitMenu(Menu):
         header = Header(self.top_frame, text='Control unit menu')
         header.pack(fill='x')
 
-        self.line_graph = LineGraph(self.center)
+        y_label = 'Temperatuur in celcius' if control_unit.type == ControlUnit.Type.TEMPERATURE else 'Licht intensiteit'
+
+        self.line_graph = LineGraph(self.center, y_label)
         self.line_graph.pack(fill='both', expand=True)
 
         self.time_range_set(5)

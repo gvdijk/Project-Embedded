@@ -7,8 +7,10 @@ from matplotlib.figure import Figure
 
 class LineGraph(tk.Frame):
 
-    def __init__(self, parent):
+    def __init__(self, parent, y_label):
         super().__init__(parent)
+
+        self.y_label = y_label
 
         self.x = []
         self.y = []
@@ -69,6 +71,9 @@ class LineGraph(tk.Frame):
         # print(self.y)
         # return
         self.plot.clear()
+
+        self.plot.set_ylabel(self.y_label)
+
         self.plot.plot_date(self.x, self.y, 'r')
         self.figure.autofmt_xdate()
         self.canvas.draw()
