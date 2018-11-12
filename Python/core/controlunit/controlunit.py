@@ -52,11 +52,11 @@ class ControlUnit:
         self.recorded_data[d] = value
         self.data_added_event.call(value=value, datetime=d)
 
-    def __still_connected(self):
+    def still_connected(self):
         return self.port in [p.device for p in serial.tools.list_ports.comports()]
 
     def send_instruction(self, instruction: Instruction):
-        if not self.__still_connected():
+        if not self.still_connected():
             self.connection_lost_event.call(control_unit=self)
             return b'\x00'
 
@@ -85,7 +85,7 @@ class ControlUnit:
         self.rolled_percentage_changed_event.call(percentage=self.rolled_percentage)
 
     def send_instruction_and_value(self, instruction: Instruction, value):
-        if not self.__still_connected():
+        if not self.still_connected():
             self.connection_lost_event.call(unit=self)
             return b'\x00'
 

@@ -29,14 +29,11 @@ class ControlUnitFinder:
                 control_unit.type = control_unit.get_sensor_type()
 
                 if control_unit.type is not ControlUnit.Type.UNIDENTIFIED:
-                    control_unit.connection_lost_event.add_listener(self.on_connection_lost)
                     self.control_units[port.device] = control_unit
                     self.control_unit_found_event.call(control_unit=control_unit)
 
             if port.device not in self.control_units.keys():
                 thread = Thread(target=check_type).start()
 
-    def on_connection_lost(self, event_data):
-        unit = event_data['control_unit']
-        if unit.port in self.control_units:
-            self.control_units.pop(unit.port)
+    def remove_control_unit(self, control_unit):
+        self.control_units.pop(control_unit.port)

@@ -38,6 +38,8 @@ class Engine:
         self.on_control_unit_added.call(control_unit=control_unit)
 
     def remove_control_unit(self, control_unit: ControlUnit):
+        print(self.__control_units)
+
         self.__control_units.remove(control_unit)
         self.on_control_unit_removed.call(control_unit=control_unit)
 
@@ -49,15 +51,19 @@ class Engine:
     def tick(self):
         counter = 0
         while self.running:
-            for control_unit in self.__control_units:
-                control_unit.update_rolled_percentage()
-
             if counter % 10 == 0:
                 self.control_unit_finder.poll()
 
-            if counter % 1 == 0:
-                for control_unit in self.__control_units:
+            for control_unit in self.__control_units:
+                if not control_unit.still_connected():
+                    self.remove_control_unit(control_unit)
+                    self.control_unit_finder.remove_control_unit(control_unit)
+                    continue
 
+                if counter % 1 == 0:
+                    control_unit.update_rolled_percentage()
+
+                if counter % 40 == 0:
                     if control_unit.type == ControlUnit.Type.LIGHT:
                         control_unit.add_data(control_unit.get_light_percentage())
 
