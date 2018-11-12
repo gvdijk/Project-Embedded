@@ -20,8 +20,8 @@ class ControlUnit:
         pass
 
     class Type(Enum):
-        LIGHT = 1
-        TEMPERATURE = 2
+        TEMPERATURE = 1
+        LIGHT = 2
         UNIDENTIFIED = 10
 
     def __init__(self, port, unit_type: Type = Type.UNIDENTIFIED):
@@ -104,8 +104,8 @@ class ControlUnit:
         response = self.send_instruction(READ_SENSOR_TYPE)
 
         switcher = {
-            97: ControlUnit.Type.LIGHT,
-            98: ControlUnit.Type.TEMPERATURE,
+            97: ControlUnit.Type.TEMPERATURE,
+            98: ControlUnit.Type.LIGHT,
         }
 
         return switcher.get(int(response.hex(), 16), ControlUnit.Type.UNIDENTIFIED)
