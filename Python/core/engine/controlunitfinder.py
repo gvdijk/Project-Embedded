@@ -23,17 +23,23 @@ class ControlUnitFinder:
 
         for port in ports_found:
 
-            def check_type():
-                control_unit = ControlUnit(port.device)
-                time.sleep(2)
-                control_unit.type = control_unit.get_sensor_type()
+            def check_type(deviceport):
+                try:
+                    control_unit = ControlUnit(deviceport.device)
+                    time.sleep(2)
+                    control_unit.type = control_unit.get_sensor_type()
+                    print(control_unit.type)
+                    print(deviceport.device)
+                    print(control_unit.type is not ControlUnit.Type.UNIDENTIFIED)
 
-                if control_unit.type is not ControlUnit.Type.UNIDENTIFIED:
-                    self.control_units[port.device] = control_unit
-                    self.control_unit_found_event.call(control_unit=control_unit)
+                    if control_unit.type is not ControlUnit.Type.UNIDENTIFIED:
+                        self.control_units[deviceport.device] = control_unit
+                        self.control_unit_found_event.call(control_unit=control_unit)
+                except:
+                    print("already connected {} and {}".format(port.device, self.control_units.keys()))
 
             if port.device not in self.control_units.keys():
-                thread = Thread(target=check_type).start()
+                thread = Thread(target=check_type(port)).start()
 
     def remove_control_unit(self, control_unit):
         self.control_units.pop(control_unit.port)
