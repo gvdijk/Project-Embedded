@@ -18,7 +18,6 @@ class ControlUnitFinder:
         self.control_unit_found_event = ControlUnitFinder.ControlUnitFoundEvent('control_unit_found')
 
     def poll(self):
-        print('polling')
         ports_found = serial.tools.list_ports.comports()
 
         for port in ports_found:
@@ -28,9 +27,6 @@ class ControlUnitFinder:
                     control_unit = ControlUnit(deviceport.device)
                     time.sleep(2)
                     control_unit.type = control_unit.get_sensor_type()
-                    print(control_unit.type)
-                    print(deviceport.device)
-                    print(control_unit.type is not ControlUnit.Type.UNIDENTIFIED)
 
                     if control_unit.type is not ControlUnit.Type.UNIDENTIFIED:
                         self.control_units[deviceport.device] = control_unit

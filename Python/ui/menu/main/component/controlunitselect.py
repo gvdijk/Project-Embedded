@@ -21,6 +21,7 @@ class ControlUnitSelect(tk.Frame):
 
         self.control_units = []
         self.unit_frames = []
+        self.distance_texts = {}
 
         Event.events['control_unit_added'].add_listener(
             lambda data: self.add_option(data['control_unit'])
@@ -39,8 +40,11 @@ class ControlUnitSelect(tk.Frame):
     def redo_unit_frames(self):
         for frame in self.unit_frames:
             frame.pack_forget()
+            frame.destroy()
+
         self.unit_frames = []
         for unit in self.control_units:
+            print(unit)
             unit_frame = tk.Frame(self.unit_box, borderwidth=1, relief="solid", bg='#3D4C53', width=300, height=180,
                                   cursor='crosshair')
             unit_frame.pack(fill='x')
@@ -52,13 +56,13 @@ class ControlUnitSelect(tk.Frame):
             elif unit.type.__str__() == 'Type.LIGHT':
                 name = "Lichtsintensiteit Eenheid"
 
-            distance_text = tk.StringVar()
+            self.distance_texts[unit] = tk.StringVar()
 
-            def update_distance_text(percentage, distance_text):
-                distance_text.set('{}%'.format(percentage))
+            def update_distance_text(percentage, unit):
+                self.distance_texts[unit].set('{}%'.format(percentage))
 
             unit.rolled_percentage_changed_event.add_listener(
-                lambda event_data: update_distance_text(event_data['percentage'], distance_text)
+                lambda event_data: update_distance_text(event_data['percentage'], unit)
             )
 
             unit_frame.unit_image = tk.PhotoImage(file='ui/arduino.png')
@@ -66,8 +70,10 @@ class ControlUnitSelect(tk.Frame):
                                               pady=15, cursor='crosshair')
             unit_frame.type_label = tk.Label(unit_frame, width=20, text=name, foreground='#EEEEEE', bg='#3D4C53',
                                              font='Serif 12 bold', cursor='crosshair')
-            unit_frame.status_label = tk.Label(unit_frame, width=20, textvariable=distance_text, foreground='#EEEEEE',
+
+            unit_frame.status_label = tk.Label(unit_frame, width=20, textvariable=self.distance_texts[unit], foreground='#EEEEEE',
                                                bg='#3D4C53', font='Serif 12 bold', cursor='crosshair')
+
             unit_frame.image_label.pack(side='left')
             unit_frame.type_label.pack(side='left')
             unit_frame.status_label.pack(side='left')
@@ -81,6 +87,7 @@ class ControlUnitSelect(tk.Frame):
             self.unit_frames.append(unit_frame)
 
     def add_option(self, control_unit: ControlUnit):
+        print(control_unit)
         self.control_units.append(control_unit)
         self.redo_unit_frames()
 

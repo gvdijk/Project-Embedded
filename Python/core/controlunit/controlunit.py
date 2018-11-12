@@ -10,15 +10,6 @@ from Python.event.event import Event
 
 
 class ControlUnit:
-    class ConnectionLostEvent(Event):
-        pass
-
-    class DataAddedEvent(Event):
-        pass
-
-    class RolledPercentageChanged(Event):
-        pass
-
 
     class Type(Enum):
         LIGHT = 1
@@ -36,9 +27,9 @@ class ControlUnit:
             timeout=2
         )
 
-        self.connection_lost_event = ControlUnit.ConnectionLostEvent()
-        self.data_added_event = ControlUnit.DataAddedEvent()
-        self.rolled_percentage_changed_event = ControlUnit.RolledPercentageChanged()
+        self.connection_lost_event = Event()
+        self.data_added_event = Event()
+        self.rolled_percentage_changed_event = Event()
         self.disconnect_event = Event()
 
         self.type = unit_type
