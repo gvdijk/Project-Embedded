@@ -176,10 +176,12 @@ class ControlUnit:
         else:
             return None
 
-    #
-    # def screen_stop_roll(self):
-    #     return self.__hex_bool_convert(self.__send_command(b'\xc3'))
-    #
+
+    def screen_stop_roll(self):
+        print('stopping roll')
+        response = self.send_instruction(SCREEN_ROLL_STOP)
+        return self.__hex_bool_convert(response)
+
     # def toggle_sensor_auto_roll(self):
     #     return self.__hex_bool_convert(self.__send_command(b'\xc4'))
     #

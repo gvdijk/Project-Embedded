@@ -15,7 +15,7 @@ typedef enum { retracted, rolling, extended, floating } state;
 bool screen_stop = false;
 bool auto_sensor = true;
 state screen_state = false;
-uint16_t sensor_trigger = 50;
+uint16_t sensor_trigger = 47;
 uint16_t sensor_margin = 1;
 
 // Initialiseer de poorten om de lampjes aan te sturen

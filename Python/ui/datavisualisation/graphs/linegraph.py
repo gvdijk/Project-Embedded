@@ -29,10 +29,10 @@ class LineGraph(tk.Frame):
         self.x.append(x)
         self.y.append(y)
 
-        # for index, date in enumerate(self.x):
-        #     if date < datetime.datetime.now() - datetime.timedelta(minutes=30):
-        #         del self.x[index]
-        #         del self.y[index]
+        for index, date in enumerate(self.x):
+            if date < datetime.datetime.now() - datetime.timedelta(minutes=30):
+                del self.x[index]
+                del self.y[index]
 
     def draw_loop(self):
         self.after(1000, self.draw_loop)
@@ -67,9 +67,6 @@ class LineGraph(tk.Frame):
         self.y = y
 
     def draw(self):
-        # print(self.x)
-        # print(self.y)
-        # return
         self.plot.clear()
 
         self.plot.set_ylabel(self.y_label)

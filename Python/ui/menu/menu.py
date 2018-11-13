@@ -12,27 +12,22 @@ class Menu(tk.Frame):
         if not base_layout:
             return
 
-        # create all of the main containers
+        # Create all of the main containers
         self.top_frame = tk.Frame(root, bg='#3D4C53', width=450, height=50, pady=3)
         self.center = tk.Frame(root, bg='#EEEEEE', width=450, height=450, pady=3)
         self.footer = tk.Frame(root, bg='#E6772E', width=450, height=50, pady=3)
 
-        # layout all of the main containers
-        # root.grid_rowconfigure(1, weight=1)
-        # root.grid_columnconfigure(0, weight=1)
-
-        # create the self.self.center widgets
-        # self.center.grid_rowconfigure(0, weight=1)
-        # self.center.grid_columnconfigure(1, weight=1)
-
+    # Open this instance of the menu
     def open(self):
         if not self.base_layout:
             return
 
+        # Packing the main containers
         self.top_frame.pack(fill='x', expand=False)
         self.center.pack(fill='both', expand=True)
         self.footer.pack(fill='x', expand=False, anchor='s')
 
+    # Close this instance of the menu
     def close(self):
         if not self.base_layout:
             return
@@ -41,5 +36,6 @@ class Menu(tk.Frame):
         self.center.pack_forget()
         self.footer.pack_forget()
 
+    # Actions to do when this Menu is deleted. Currently not applicable
     def on_delete(self):
         pass

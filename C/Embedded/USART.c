@@ -100,7 +100,7 @@ void handleCommand(void) {
 			switch(incoming) {
 				case 0x81:
 					// 0x61 voor Licht, 0x62 voor Temp
-					outgoing = 0x61;
+					outgoing = 0x62;
 					break;
 				
 				case 0x82:

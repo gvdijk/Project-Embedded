@@ -64,7 +64,7 @@ class Engine:
                 if counter % 1 == 0:
                     control_unit.update_rolled_percentage()
 
-                if counter % 40 == 0:
+                if counter % 2 == 0:
                     if control_unit.type == ControlUnit.Type.LIGHT:
                         control_unit.add_data(control_unit.get_light_percentage())
 

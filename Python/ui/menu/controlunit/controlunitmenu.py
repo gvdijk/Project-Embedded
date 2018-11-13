@@ -15,26 +15,30 @@ class ControlUnitMenu(Menu):
         super().__init__(parent, 'Control unit menu')
         self.control_unit = control_unit
 
+        # Get the images for the UI
         self.time_05_image = tk.PhotoImage(file='ui/time_5_white.png')
         self.time_10_image = tk.PhotoImage(file='ui/time_10_white.png')
         self.time_30_image = tk.PhotoImage(file='ui/time_30_white.png')
 
+        # Add the Header to this Menu
         header = Header(self.top_frame, text='Control unit menu')
         header.pack(fill='x')
 
+        # Label for the y axis of the graph
         y_label = 'Temperatuur in celcius' if control_unit.type == ControlUnit.Type.TEMPERATURE else 'Licht intensiteit'
 
+        # Add and configure the graph
         self.line_graph = LineGraph(self.center, y_label)
         self.line_graph.pack(fill='both', expand=True)
-
         self.time_range_set(5)
 
+        # Add an information bar to the header
         info_bar = InfoBar(self.top_frame, control_unit)
         info_bar.pack(fill='x')
 
         button_wrapper = tk.Frame(self.center)
 
-
+        # Configure the graph buttons
         time_05_button = tk.Button(button_wrapper, bg='#3D4C53', foreground='#EEEEEE', text='5 min',
                                    image=self.time_05_image, compound='left', command=self.time_05_click, width=100,
                                    relief='ridge')
@@ -45,41 +49,51 @@ class ControlUnitMenu(Menu):
                                    image=self.time_30_image, compound='left', command=self.time_30_click, width=100,
                                    relief='ridge')
 
+        # Pack the buttons
         button_wrapper.pack()
         time_05_button.pack(side='left')
         time_10_button.pack(side='left')
         time_30_button.pack(side='left')
 
+        # Add the control buttons for this unit
         self.control_buttons = ControlButtons(self.footer, control_unit)
         self.control_buttons.pack()
 
+        # Add the settings panel for this unit
         self.setting_buttons = Settingspanel(self.footer, control_unit)
         self.setting_buttons.pack()
 
+        # Drop out of this Menu when connection with its unit is lost
         self.control_unit.disconnect_event.add_listener(
             lambda event_data: MenuStack.back()
         )
 
+        # Add the data when a package is received from the unit through the enginge
         self.control_unit.data_added_event.add_listener(
             lambda event_data: self.add_data(event_data['datetime'], event_data['value'])
         )
 
+    # Add data to the graph
     def add_data(self, date_time, value):
         self.line_graph.add_value(date_time, value)
 
+    # Actions to do when this Menu is deleted. Currently not applicable
     def on_delete(self):
-        print('hi')
         pass
 
+    # Set the graph range to 5 minutes
     def time_05_click(self):
         self.time_range_set(5)
 
+    # Set the graph range to 10 minutes
     def time_10_click(self):
         self.time_range_set(10)
 
+    # Set the graph range to 30 minutes
     def time_30_click(self):
         self.time_range_set(30)
 
+    # Set the graph x axis range based on minutes
     def time_range_set(self, minutes):
         x_data = []
         y_data = []

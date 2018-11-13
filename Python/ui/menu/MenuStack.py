@@ -18,6 +18,7 @@ class MenuStack:
         if not MenuStack.instance:
             MenuStack.instance = MenuStack.__MenuStack(root)
 
+    # Go to the passed in Menu, close the current Menu
     @staticmethod
     def next(menu: Menu):
         if len(MenuStack.instance.stack) > 0:
@@ -29,9 +30,10 @@ class MenuStack:
         menu.pack(expand=False)
         menu.open()
 
+    # Go to the previous Menu, close the current Menu
     @staticmethod
     def back():
-        if len(MenuStack.instance.stack) > 0:
+        if len(MenuStack.instance.stack) > 1:
             prev = MenuStack.instance.stack.pop()
             prev.close()
             prev.on_delete()
@@ -41,6 +43,7 @@ class MenuStack:
         new = MenuStack.instance.stack[-1]
         new.open()
 
+    # Return whether we are in the main menu
     @staticmethod
     def can_back() -> bool:
         return len(MenuStack.instance.stack) > 0
