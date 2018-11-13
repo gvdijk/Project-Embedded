@@ -1,3 +1,6 @@
+
+# This class contains the instruction set of the units
+# Please read the UART Protocol of this project for more information
 class Instruction:
     def __init__(self, command, bytes: int):
         self.command = command

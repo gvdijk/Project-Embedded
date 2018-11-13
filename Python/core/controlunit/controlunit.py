@@ -11,12 +11,14 @@ from Python.event.event import Event
 
 class ControlUnit:
 
+    # Types of units supported
     class Type(Enum):
         LIGHT = 1
         TEMPERATURE = 2
         UNIDENTIFIED = 10
 
     def __init__(self, port, unit_type: Type = Type.UNIDENTIFIED):
+        # Open a serial connection
         self.port = port
         self.ser = serial.Serial(
             port=port,
@@ -27,6 +29,7 @@ class ControlUnit:
             timeout=2
         )
 
+        # Add events to this unit
         self.connection_lost_event = Event()
         self.data_added_event = Event()
         self.rolled_percentage_changed_event = Event()
@@ -48,26 +51,35 @@ class ControlUnit:
         self.recorded_data[d] = value
         self.data_added_event.call(value=value, datetime=d)
 
+    # Check whether the unit is still connected
     def still_connected(self):
         return self.port in [p.device for p in serial.tools.list_ports.comports()]
 
+    # Send an instruction and return the result
     def send_instruction(self, instruction: Instruction):
+        # Check whether the unit is still connected
         if not self.still_connected():
             self.connection_lost_event.call(control_unit=self)
             return b'\x00'
 
+        # Open the serial if it is closed
         if not self.ser.isOpen():
             self.ser.open()
 
+        # Write an instruction over the serial connection
         self.ser.write(instruction.command)
         while self.ser.isOpen():
+            # Wait for the unit to respond, then read the value out
             time.sleep(.010)
             result = self.ser.read(instruction.bytes)
 
+            # Check if we have a useful result, else return 0
             if result == b'':
                 return b'\x00'
             elif result != b'\x00':
                 return result
+            else:
+                return b'\x00'
         else:
             return b'\x00'
 
@@ -96,14 +108,14 @@ class ControlUnit:
 
         return self.ser.read(1)
 
+    # The 15 functions below represent the commands that can be send to the unit
+    # For more information, please read the UART Protocol for this project
     def get_sensor_type(self):
         response = self.send_instruction(READ_SENSOR_TYPE)
-
         switcher = {
             97: ControlUnit.Type.LIGHT,
             98: ControlUnit.Type.TEMPERATURE
         }
-
         return switcher.get(int(response.hex(), 16), ControlUnit.Type.UNIDENTIFIED)
 
     def get_min_distance(self):
@@ -146,20 +158,22 @@ class ControlUnit:
         return self.__hex_bool_convert(response)
 
     def toggle_sensor_auto_roll(self):
-        print('toggled')
         response = self.send_instruction(TOGGLE_AUTO_ROLL)
         return self.__hex_bool_convert(response)
 
     def screen_roll_out(self):
-        print('rolling out')
         response = self.send_instruction(SCREEN_ROLL_OUT)
         return self.__hex_bool_convert(response)
 
     def screen_roll_in(self):
-        print('rolling in')
         response = self.send_instruction(SCREEN_ROLL_IN)
         return self.__hex_bool_convert(response)
 
+    def screen_stop_roll(self):
+        response = self.send_instruction(SCREEN_ROLL_STOP)
+        return self.__hex_bool_convert(response)
+
+    # Convert a return value to a boolean, according the UART Protocol of this project
     def __hex_bool_convert(self, hex):
         if hex == b'\xff':
             return True
@@ -168,6 +182,7 @@ class ControlUnit:
         else:
             return None
 
+    # Convert a decimal number to hexadecimal numbers in 16-bit, with 8-bits high and low
     def __get_byte(self, value, pos):
         if pos == 'high':
             return bytes.fromhex('{:02x}'.format((int(value) >> 8)))
@@ -175,15 +190,3 @@ class ControlUnit:
             return bytes.fromhex('{:02x}'.format((int(value) & 255)))
         else:
             return None
-
-
-    def screen_stop_roll(self):
-        print('stopping roll')
-        response = self.send_instruction(SCREEN_ROLL_STOP)
-        return self.__hex_bool_convert(response)
-
-    # def toggle_sensor_auto_roll(self):
-    #     return self.__hex_bool_convert(self.__send_command(b'\xc4'))
-    #
-    # def toggle_temperature_auto_roll(self):
-    #     return self.__hex_bool_convert(self.__send_command(b'\xc5'))
