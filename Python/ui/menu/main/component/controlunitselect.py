@@ -1,4 +1,3 @@
-import math
 import tkinter as tk
 
 from Python.core.controlunit.controlunit import ControlUnit

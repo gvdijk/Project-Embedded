@@ -23,6 +23,7 @@ class Engine:
         self.control_unit_finder = ControlUnitFinder()
         self.control_unit_finder.control_unit_found_event.add_listener(self.on_control_unit_found)
 
+        # Bind events to this Engine
         self.on_control_unit_added = Engine.ControlUnitAddedEvent()
         self.on_control_unit_removed = Engine.ControlUnitRemovedEvent()
 
@@ -33,21 +34,23 @@ class Engine:
         )
         self.add_control_unit(control_unit)
 
+    # Add a control unit to this Engine
     def add_control_unit(self, control_unit: ControlUnit):
         self.__control_units.append(control_unit)
         self.on_control_unit_added.call(control_unit=control_unit)
 
+    # Remove a control unit from this Engine
     def remove_control_unit(self, control_unit: ControlUnit):
-        print(self.__control_units)
-
         self.__control_units.remove(control_unit)
         self.on_control_unit_removed.call(control_unit=control_unit)
 
+    # Start the engine on its own thread
     def start(self):
         self.running = True
         thread = Thread(target=self.tick)
         thread.start()
 
+    # Engine tick, perform tasks based on tick count
     def tick(self):
         counter = 0
         while self.running:
@@ -74,35 +77,3 @@ class Engine:
             time.sleep(1)
 
             counter += 1
-
-
-
-# while True:
-#     self.__poll_control_units()
-
-# def __poll_control_units(self):
-#     print('polling')
-#     ports_found = serial.tools.list_ports.comports()
-#     ports = {}
-#
-#     def add_port(port):
-#         print('adding')
-#         con: Connector = Connector(port.device)
-#         time.sleep(2)
-#         type = con.readSensorType()
-#         print('type')
-#         print(type)
-#         if type is not None:
-#             ports[port.device] = (con, port.serial_number)
-#             print("Port {} successfully verified as {} with id {} \n".format(port.device, type, port.serial_number))
-#             print('maxDistance')
-#             print(con.readMinDistance())
-#             print('inDistance')
-#             print(con.readMaxDistance())
-#
-#     for port in ports_found:
-#         if port.device not in ports.keys():
-#             add_port(port)
-#         elif ports[port.device][1] != port.serial_number:
-#             ports[port.device][0].close()
-#             add_port(port)
